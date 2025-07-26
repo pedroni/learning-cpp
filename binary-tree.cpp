@@ -7,25 +7,25 @@
 
 using namespace std;
 
-struct Node {
-  string value;
-  Node *left;
-  Node *right;
+template <class T> struct Node {
+  T value;
+  Node<T> *left;
+  Node<T> *right;
 
-  Node() : value(""), left(NULL), right(NULL) {}
+  Node() : value(0), left(NULL), right(NULL) {}
 };
 
-vector<Node *> breadthFirstWalk(Node *node) {
-    
-  vector<Node *> results;
+template <class T> vector<Node<T> *> breadthFirstWalk(Node<T> *node) {
+
+  vector<Node<T> *> results;
 
   if (node == 0) {
     return results;
   }
 
-  Node *current;
+  Node<T> *current;
 
-  queue<Node *> inProgress;
+  queue<Node<T> *> inProgress;
 
   inProgress.push(node);
 
@@ -47,9 +47,9 @@ vector<Node *> breadthFirstWalk(Node *node) {
   return results;
 };
 
-vector<Node> depthFirstWalk(Node *node) {
+template <class T> vector<Node<T>> depthFirstWalk(Node<T> *node) {
   // for depth first walk we can simply use a recursive approach
-  vector<Node> results;
+  vector<Node<T>> results;
 
   if (node == NULL) {
     return results;
@@ -57,8 +57,8 @@ vector<Node> depthFirstWalk(Node *node) {
 
   results.push_back(*node);
 
-  vector<Node> left = depthFirstWalk(node->left);
-  vector<Node> right = depthFirstWalk(node->right);
+  vector<Node<T>> left = depthFirstWalk(node->left);
+  vector<Node<T>> right = depthFirstWalk(node->right);
 
   for (int j = 0; j < left.size(); j++) {
     results.push_back(left[j]);
@@ -71,16 +71,16 @@ vector<Node> depthFirstWalk(Node *node) {
   return results;
 }
 
-vector<Node> depthFirstWalkLoop(Node *node) {
-  vector<Node> results;
+template <class T> vector<Node<T>> depthFirstWalkLoop(Node<T> *node) {
+  vector<Node<T>> results;
 
   if (node == NULL) {
     return results;
   }
 
-  stack<Node *> stack;
+  stack<Node<T> *> stack;
 
-  Node *current;
+  Node<T> *current;
 
   stack.push(node);
 
@@ -102,13 +102,30 @@ vector<Node> depthFirstWalkLoop(Node *node) {
   return results;
 }
 
+float treeSum(Node<float> *node) {
+  if (node == NULL) {
+    return 0;
+  }
+
+  float sum = 0;
+
+  stack<Node<float> *> pending;
+  pending.push(node);
+
+  while (!pending.empty()) {
+    sum += node->value;
+  }
+
+  return sum;
+}
+
 int main() {
-  Node a;
-  Node b;
-  Node c;
-  Node d;
-  Node e;
-  Node f;
+  Node<string> a;
+  Node<string> b;
+  Node<string> c;
+  Node<string> d;
+  Node<string> e;
+  Node<string> f;
 
   a.value = "a";
   b.value = "b";
@@ -131,7 +148,7 @@ int main() {
 
   c.right = &f;
 
-  vector<Node> results = depthFirstWalkLoop(&a);
+  vector<Node<string>> results = depthFirstWalkLoop(&a);
 
   string output = "";
 
