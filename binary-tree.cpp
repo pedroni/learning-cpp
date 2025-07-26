@@ -1,5 +1,7 @@
+#include <cstddef>
 #include <iostream>
 #include <queue>
+#include <stack>
 #include <string>
 #include <vector>
 
@@ -9,14 +11,21 @@ struct Node {
   string value;
   Node *left;
   Node *right;
+
+  Node() : value(""), left(NULL), right(NULL) {}
 };
 
-vector<Node> breadthFirstWalk(Node node) {
-  vector<Node> results;
+vector<Node *> breadthFirstWalk(Node *node) {
+    
+  vector<Node *> results;
 
-  Node current;
+  if (node == 0) {
+    return results;
+  }
 
-  queue<Node> inProgress;
+  Node *current;
+
+  queue<Node *> inProgress;
 
   inProgress.push(node);
 
@@ -24,12 +33,12 @@ vector<Node> breadthFirstWalk(Node node) {
     current = inProgress.front();
     inProgress.pop();
 
-    if (current.left != 0) {
-      inProgress.push(*current.left);
+    if (current->left != 0) {
+      inProgress.push(current->left);
     }
 
-    if (current.right != 0) {
-      inProgress.push(*current.right);
+    if (current->right != 0) {
+      inProgress.push(current->right);
     }
 
     results.push_back(current);
@@ -38,20 +47,75 @@ vector<Node> breadthFirstWalk(Node node) {
   return results;
 };
 
+vector<Node> depthFirstWalk(Node *node) {
+  // for depth first walk we can simply use a recursive approach
+  vector<Node> results;
+
+  if (node == NULL) {
+    return results;
+  }
+
+  results.push_back(*node);
+
+  vector<Node> left = depthFirstWalk(node->left);
+  vector<Node> right = depthFirstWalk(node->right);
+
+  for (int j = 0; j < left.size(); j++) {
+    results.push_back(left[j]);
+  }
+
+  for (int i = 0; i < right.size(); i++) {
+    results.push_back(right[i]);
+  }
+
+  return results;
+}
+
+vector<Node> depthFirstWalkLoop(Node *node) {
+  vector<Node> results;
+
+  if (node == NULL) {
+    return results;
+  }
+
+  stack<Node *> stack;
+
+  Node *current;
+
+  stack.push(node);
+
+  while (!stack.empty()) {
+    current = stack.top();
+    results.push_back(*current);
+
+    stack.pop();
+
+    if (current->right != NULL) {
+      stack.push(current->right);
+    }
+
+    if (current->left != NULL) {
+      stack.push(current->left);
+    }
+  }
+
+  return results;
+}
+
 int main() {
-  Node a = Node();
-  Node *b = new Node();
-  Node *c = new Node();
-  Node *d = new Node();
-  Node *e = new Node();
-  Node *f = new Node();
+  Node a;
+  Node b;
+  Node c;
+  Node d;
+  Node e;
+  Node f;
 
   a.value = "a";
-  b->value = "b";
-  c->value = "c";
-  d->value = "d";
-  e->value = "e";
-  f->value = "f";
+  b.value = "b";
+  c.value = "c";
+  d.value = "d";
+  e.value = "e";
+  f.value = "f";
 
   //        a
   //       / \
@@ -59,15 +123,15 @@ int main() {
   //     / \    \
   //    d   e    f
 
-  a.left = b;
-  a.right = c;
+  a.left = &b;
+  a.right = &c;
 
-  b->left = d;
-  b->right = e;
+  b.left = &d;
+  b.right = &e;
 
-  c->right = f;
+  c.right = &f;
 
-  vector<Node> results = breadthFirstWalk(a);
+  vector<Node> results = depthFirstWalkLoop(&a);
 
   string output = "";
 
