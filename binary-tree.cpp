@@ -7,7 +7,8 @@
 
 using namespace std;
 
-template <class T> struct Node {
+template <class T>
+struct Node {
   T value;
   Node<T> *left;
   Node<T> *right;
@@ -15,7 +16,8 @@ template <class T> struct Node {
   Node() : value(0), left(NULL), right(NULL) {}
 };
 
-template <class T> vector<Node<T> *> breadthFirstWalk(Node<T> *node) {
+template <class T>
+vector<Node<T> *> breadthFirstWalk(Node<T> *node) {
 
   vector<Node<T> *> results;
 
@@ -47,9 +49,10 @@ template <class T> vector<Node<T> *> breadthFirstWalk(Node<T> *node) {
   return results;
 };
 
-template <class T> vector<Node<T>> depthFirstWalk(Node<T> *node) {
+template <class T>
+vector<Node<T> > depthFirstWalk(Node<T> *node) {
   // for depth first walk we can simply use a recursive approach
-  vector<Node<T>> results;
+  vector<Node<T> > results;
 
   if (node == NULL) {
     return results;
@@ -57,8 +60,8 @@ template <class T> vector<Node<T>> depthFirstWalk(Node<T> *node) {
 
   results.push_back(*node);
 
-  vector<Node<T>> left = depthFirstWalk(node->left);
-  vector<Node<T>> right = depthFirstWalk(node->right);
+  vector<Node<T> > left = depthFirstWalk(node->left);
+  vector<Node<T> > right = depthFirstWalk(node->right);
 
   for (int j = 0; j < left.size(); j++) {
     results.push_back(left[j]);
@@ -71,8 +74,9 @@ template <class T> vector<Node<T>> depthFirstWalk(Node<T> *node) {
   return results;
 }
 
-template <class T> vector<Node<T>> depthFirstWalkLoop(Node<T> *node) {
-  vector<Node<T>> results;
+template <class T>
+vector<Node<T> > depthFirstWalkLoop(Node<T> *node) {
+  vector<Node<T> > results;
 
   if (node == NULL) {
     return results;
@@ -148,13 +152,48 @@ int main() {
 
   c.right = &f;
 
-  vector<Node<string>> results = depthFirstWalkLoop(&a);
+  vector<Node<string> > results = depthFirstWalkLoop(&a);
 
   string output = "";
 
   for (int i = 0; i < results.size(); i++) {
     output.append(results[i].value);
   }
+
+  cout << output << endl;
+
+  cout << "----------------" << endl;
+  cout << "Tree Sum" << endl;
+
+  Node<float> one;
+  Node<float> two;
+  Node<float> three;
+  Node<float> four;
+  Node<float> five;
+  Node<float> six;
+
+  one.value = 1;
+  two.value = 2;
+  three.value = 3;
+  four.value = 4;
+  five.value = 5;
+  six.value = 6;
+
+  //        1
+  //       / \
+  //      2   3
+  //     / \    \
+  //    4   5    6
+
+  one.left = &two;
+  one.right = &three;
+
+  two.left = &four;
+  two.right = &five;
+
+  three.right = &six;
+
+  float sum = treeSum(&one);
 
   cout << output << endl;
 }

@@ -1,0 +1,8 @@
+---
+Language: Cpp
+# Use C++03 style which enforces spaces in >> for C++98 compatibility
+Standard: c++03
+SpacesInAngles: Never
+# This ensures >> becomes > > in nested templates for C++98
+SpaceBeforeRangeBasedForLoopColon: true
+AlwaysBreakTemplateDeclarations: true
