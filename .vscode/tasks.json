@@ -4,13 +4,12 @@
     {
       "label": "C++ Build",
       "type": "shell",
-      "command": "g++",
+      "command": "clang++",
       "args": ["-g", "-std=c++98", "main.cpp", "-o", "main"],
       "group": {
         "kind": "build",
         "isDefault": true
-      },
-      "problemMatcher": ["$gcc"]
+      }
     }
   ]
 }
