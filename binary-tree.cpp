@@ -1,5 +1,7 @@
 #include <cstddef>
+#include <cstdio>
 #include <iostream>
+#include <ostream>
 #include <queue>
 #include <stack>
 #include <string>
@@ -14,6 +16,12 @@ struct Node {
 
   Node() : value(), left(NULL), right(NULL) {}
 };
+
+template <class T>
+ostream &operator<<(ostream &os, const Node<T> &node) {
+  os << node.value;
+  return os;
+}
 
 template <class T>
 vector<Node<T> *> breadthFirstWalk(Node<T> *node) {
@@ -116,8 +124,6 @@ float treeSum(Node<float> *node) {
 
   pending.push(node);
 
-  cout << "Start working" << endl;
-
   Node<float> *current;
 
   while (!pending.empty()) {
@@ -165,6 +171,68 @@ float treeMin(Node<float> node) {
   }
 
   return min;
+}
+
+template <typename T>
+void printVector(vector<Node<T> > vector) {
+
+  cout << "[ (" << vector.size() << ") ";
+  for (int i = 0; i < vector.size(); i++) {
+    cout << vector[i].value;
+    if (i + 1 != vector.size()) {
+      cout << ", ";
+    }
+  }
+
+  cout << "]" << endl;
+}
+
+float maxPathSum(Node<float> root) {
+  float maxSum = 0;
+
+  stack<Node<float> > stack;
+  stack.push(root);
+
+  Node<float> current;
+  bool stop = false;
+
+  float pathSum = 0;
+
+  vector<Node<float> > paths;
+
+  while (!stack.empty() && !stop) {
+    current = stack.top();
+
+    stack.pop();
+
+    pathSum += current.value;
+    paths.push_back(current);
+
+    // found a leaf
+    if (current.left == NULL && current.right == NULL) {
+      if (pathSum > maxSum) {
+        maxSum = pathSum;
+      }
+
+      printVector(paths);
+      paths.clear();
+      cout << "sums found " << pathSum << endl;
+
+      // return to the root value
+      paths.push_back(root);
+      pathSum = root.value;
+    }
+
+    if (current.right != NULL) {
+      stack.push(*current.right);
+    }
+
+    if (current.left != NULL) {
+      stack.push(*current.left);
+    }
+  }
+
+  return maxSum;
 }
 
 int main() {
@@ -241,8 +309,13 @@ int main() {
   three.right = &six;
 
   float sum = treeSum(&root);
-  float min = treeMin(root);
-
   cout << "Sum: " << sum << endl;
+
+  cout << "----------------" << endl;
+  float min = treeMin(root);
   cout << "Min: " << min << endl;
+
+  cout << "----------------" << endl;
+  float maxSum = maxPathSum(root);
+  cout << "maxSum: " << maxSum << endl;
 }
