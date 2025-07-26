@@ -4,7 +4,6 @@
 #include <stack>
 #include <string>
 #include <vector>
-
 using namespace std;
 
 template <class T>
@@ -13,7 +12,7 @@ struct Node {
   Node<T> *left;
   Node<T> *right;
 
-  Node() : value(0), left(NULL), right(NULL) {}
+  Node() : value(), left(NULL), right(NULL) {}
 };
 
 template <class T>
@@ -21,7 +20,7 @@ vector<Node<T> *> breadthFirstWalk(Node<T> *node) {
 
   vector<Node<T> *> results;
 
-  if (node == 0) {
+  if (node == NULL) {
     return results;
   }
 
@@ -35,11 +34,11 @@ vector<Node<T> *> breadthFirstWalk(Node<T> *node) {
     current = inProgress.front();
     inProgress.pop();
 
-    if (current->left != 0) {
+    if (current->left != NULL) {
       inProgress.push(current->left);
     }
 
-    if (current->right != 0) {
+    if (current->right != NULL) {
       inProgress.push(current->right);
     }
 
@@ -114,86 +113,136 @@ float treeSum(Node<float> *node) {
   float sum = 0;
 
   stack<Node<float> *> pending;
+
   pending.push(node);
 
+  cout << "Start working" << endl;
+
+  Node<float> *current;
+
   while (!pending.empty()) {
-    sum += node->value;
+    current = pending.top();
+
+    sum = sum + current->value;
+
+    pending.pop();
+
+    if (current->left != NULL) {
+      pending.push(current->left);
+    }
+
+    if (current->right != NULL) {
+      pending.push(current->right);
+    }
   }
 
   return sum;
 }
 
-int main() {
-  Node<string> a;
-  Node<string> b;
-  Node<string> c;
-  Node<string> d;
-  Node<string> e;
-  Node<string> f;
+float treeMin(Node<float> node) {
+  float min = node.value;
 
-  a.value = "a";
-  b.value = "b";
-  c.value = "c";
-  d.value = "d";
-  e.value = "e";
-  f.value = "f";
+  stack<Node<float> > pending;
+  pending.push(node);
 
-  //        a
-  //       / \
-  //      b   c
-  //     / \    \
-  //    d   e    f
+  Node<float> current;
 
-  a.left = &b;
-  a.right = &c;
+  while (!pending.empty()) {
+    current = pending.top();
+    pending.pop();
 
-  b.left = &d;
-  b.right = &e;
+    if (current.value < min) {
+      min = current.value;
+    }
 
-  c.right = &f;
+    if (current.right != NULL) {
+      pending.push(*current.right);
+    }
 
-  vector<Node<string> > results = depthFirstWalkLoop(&a);
-
-  string output = "";
-
-  for (int i = 0; i < results.size(); i++) {
-    output.append(results[i].value);
+    if (current.left != NULL) {
+      pending.push(*current.left);
+    }
   }
 
-  cout << output << endl;
+  return min;
+}
+
+int main() {
+
+  {
+    Node<string> a;
+    Node<string> b;
+    Node<string> c;
+    Node<string> d;
+    Node<string> e;
+    Node<string> f;
+
+    a.value = "a";
+    b.value = "b";
+    c.value = "c";
+    d.value = "d";
+    e.value = "e";
+    f.value = "f";
+
+    //        a
+    //       / \
+     //      b   c
+    //     / \    \
+     //    d   e    f
+
+    a.left = &b;
+    a.right = &c;
+
+    b.left = &d;
+    b.right = &e;
+
+    c.right = &f;
+
+    vector<Node<string> > results = depthFirstWalkLoop(&a);
+
+    string output = "";
+
+    for (int i = 0; i < results.size(); i++) {
+      output.append(results[i].value);
+    }
+
+    cout << output << endl;
+  }
 
   cout << "----------------" << endl;
-  cout << "Tree Sum" << endl;
+  cout << "Tree Operations" << endl;
 
-  Node<float> one;
+  Node<float> root;
   Node<float> two;
   Node<float> three;
   Node<float> four;
   Node<float> five;
   Node<float> six;
 
-  one.value = 1;
+  root.value = 100;
   two.value = 2;
   three.value = 3;
   four.value = 4;
   five.value = 5;
   six.value = 6;
 
-  //        1
+  //       100
   //       / \
   //      2   3
   //     / \    \
   //    4   5    6
 
-  one.left = &two;
-  one.right = &three;
+  root.left = &two;
+  root.right = &three;
 
   two.left = &four;
   two.right = &five;
 
   three.right = &six;
 
-  float sum = treeSum(&one);
+  float sum = treeSum(&root);
+  float min = treeMin(root);
 
-  cout << output << endl;
+  cout << "Sum: " << sum << endl;
+  cout << "Min: " << min << endl;
 }
