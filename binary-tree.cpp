@@ -251,6 +251,7 @@ int main() {
   Node<float> four;
   Node<float> five;
   Node<float> six;
+  Node<float> seven;
 
   root.value = 100;
   two.value = 2;
@@ -258,12 +259,23 @@ int main() {
   four.value = 4;
   five.value = 5;
   six.value = 6;
+  seven.value = 7;
 
   //       100
   //       / \
   //      2   3
   //     / \    \
   //    4   5    6
+  //         \
+  //          7
+
+  cout << "//       100" << endl;
+  cout << "//       / \\" << endl;
+  cout << "//      2   3" << endl;
+  cout << "//     / \\    \\" << endl;
+  cout << "//    4   5    6" << endl;
+  cout << "//         \\" << endl;
+  cout << "//          7" << endl;
 
   root.left = &two;
   root.right = &three;
@@ -272,6 +284,8 @@ int main() {
   two.right = &five;
 
   three.right = &six;
+
+  five.right = &seven;
 
   float sum = treeSum(&root);
   cout << "Sum: " << sum << endl;
