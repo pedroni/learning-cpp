@@ -187,53 +187,18 @@ void printVector(vector<Node<T> > vector) {
   cout << "]" << endl;
 }
 
-float maxPathSum(Node<float> root) {
-  float maxSum = 0;
-
-  stack<Node<float> > stack;
-  stack.push(root);
-
-  Node<float> current;
-  bool stop = false;
-
-  float pathSum = 0;
-
-  vector<Node<float> > paths;
-
-  while (!stack.empty() && !stop) {
-    current = stack.top();
-
-    stack.pop();
-
-    pathSum += current.value;
-    paths.push_back(current);
-
-    // found a leaf
-    if (current.left == NULL && current.right == NULL) {
-      if (pathSum > maxSum) {
-        maxSum = pathSum;
-      }
-
-      printVector(paths);
-      paths.clear();
-      cout << "sums found " << pathSum << endl;
-
-      // return to the root value
-      paths.push_back(root);
-      pathSum = root.value;
-    }
-
-    if (current.right != NULL) {
-      stack.push(*current.right);
-    }
-
-    if (current.left != NULL) {
-      stack.push(*current.left);
-    }
+float maxPathSum(const Node<float> *node) {
+  if (node == NULL) {
+    return 0;
   }
 
-  return maxSum;
-}
+  if (node->left == NULL && node->right == NULL) {
+    return node->value;
+  }
+
+  return max(node->value + maxPathSum(node->left),
+             maxPathSum(node->right) + node->value);
+};
 
 int main() {
 
@@ -316,6 +281,6 @@ int main() {
   cout << "Min: " << min << endl;
 
   cout << "----------------" << endl;
-  float maxSum = maxPathSum(root);
+  float maxSum = maxPathSum(&root);
   cout << "maxSum: " << maxSum << endl;
 }
