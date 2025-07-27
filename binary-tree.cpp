@@ -187,21 +187,19 @@ void printVector(vector<Node<T> > vector) {
   cout << "]" << endl;
 }
 
-float maxPathSum(const Node<float> *node) {
-  if (node == NULL) {
-    return 0;
-  }
+float maxPathSum(const Node<float> &node) {
+  float leftSum = node.left == NULL ? 0 : maxPathSum(*node.left);
+  float rightSum = node.right == NULL ? 0 : maxPathSum(*node.right);
 
-  if (node->left == NULL && node->right == NULL) {
-    return node->value;
-  }
+  cout << "----------" << endl;
+  cout << "working on node: " << node.value << endl;
+  cout << "left sum: " << leftSum << endl;
+  cout << "right sum: " << rightSum << endl;
 
-  return max(node->value + maxPathSum(node->left),
-             maxPathSum(node->right) + node->value);
+  return node.value + max(leftSum, rightSum);
 };
 
 int main() {
-
   {
     Node<string> a;
     Node<string> b;
@@ -295,6 +293,6 @@ int main() {
   cout << "Min: " << min << endl;
 
   cout << "----------------" << endl;
-  float maxSum = maxPathSum(&root);
+  float maxSum = maxPathSum(root);
   cout << "maxSum: " << maxSum << endl;
 }
