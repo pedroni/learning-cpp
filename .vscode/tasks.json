@@ -6,9 +6,15 @@
       "type": "shell",
       "command": "clang++",
       "args": ["-g", "-std=c++98", "main.cpp", "-o", "main"],
+      "group": "build"
+    },
+    {
+      "label": "C++ Watch and Run",
+      "type": "shell",
+      "command": "bash -c 'g++ -std=c++98 -o main.o \"$1\" && ./main.o && fswatch -o \"$1\" | xargs -n1 -I{} sh -c \"clear && g++ -std=c++98 -o main.o \\\"$1\\\" && ./main.o\"' _ ${file}",
       "group": {
-        "kind": "build",
-        "isDefault": true
+        "isDefault": true,
+        "kind": "build"
       }
     }
   ]
