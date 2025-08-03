@@ -41,23 +41,18 @@ public:
   void printList() {
     Node *temp = head;
 
-    cout << endl;
     for (int i = 1; i < this->length * 3; i++) {
       cout << "-";
     }
     cout << endl;
 
+    cout << "(" << this->length << "): ";
     while (temp != NULL) {
       cout << temp->value;
       temp = temp->next;
       if (temp) {
         cout << " | ";
       }
-    }
-
-    cout << endl;
-    for (int i = 1; i < this->length * 3; i++) {
-      cout << "-";
     }
 
     cout << endl;
@@ -99,38 +94,47 @@ public:
 
     Node *current = this->head;
 
-    while (current) {
-      cout << "iterating: " << current->value << endl;
+    while (current->next) {
       if (current->next == this->tail) {
-        cout << "found tail: " << this->tail->value;
-        // found the tail at next, from this moment we start working on setting
-        // the current item in the iteration as the tail
-        Node *tailToDelete = current->next;
-
-        this->tail = current;
-
-        // set next to NULL, which is the definition of what a tail is
-        this->tail->next = NULL;
-
-        // free the memory to avoid memory leak
-        delete tailToDelete;
-
-        this->length--;
+        // found the item that hold tail as last, the penultimate. the second to
+        // last, from this moment we no longer need to continue iterating
         break;
-      } else {
-        current = current->next;
       }
+
+      current = current->next;
     }
+
+    // free up the memory of tail, we no longer use it
+    delete this->tail;
+
+    // set next as NULL, we no longer use it, the next in this case was the tail
+    current->next = NULL;
+
+    // make the tail be the current item
+    this->tail = current;
+
+    // update the length
+    this->length--;
   }
 };
 
 int main() {
 
-  LinkedList *myLinkedList = new LinkedList(4);
+  LinkedList *myLinkedList = new LinkedList(1);
+  myLinkedList->append(2);
   myLinkedList->append(3);
+  myLinkedList->append(4);
 
   myLinkedList->deleteLast();
+  myLinkedList->printList();
 
+  myLinkedList->deleteLast();
+  myLinkedList->printList();
+
+  myLinkedList->deleteLast();
+  myLinkedList->printList();
+
+  myLinkedList->deleteLast();
   myLinkedList->printList();
 
   cout << "Linked List :)" << endl;
