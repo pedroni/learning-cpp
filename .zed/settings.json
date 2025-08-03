@@ -4,5 +4,12 @@
 // see the documentation: https://zed.dev/docs/configuring-zed#settings-files
 {
   "show_edit_predictions": false,
-  "format_on_save": "on"
+  "format_on_save": "on",
+  "lsp": {
+    "clangd": {
+      "binary": {
+        "arguments": ["--function-arg-placeholders=0"]
+      }
+    }
+  }
 }
