@@ -216,25 +216,12 @@ public:
       return;
     }
 
-    int currentIndex = 0;
-    Node *current = this->head;
+    Node *prev = this->get(index - 1);
 
-    Node *prev;
-    while (current) {
+    Node *current = prev->next;
+    prev->next = current->next;
 
-      // find previous item
-      if (currentIndex == index) {
-        Node *next = current->next;
-        delete current;
-        prev->next = next;
-        break;
-      }
-
-      prev = current;
-      current = current->next;
-
-      currentIndex++;
-    }
+    delete current;
 
     this->length--;
   }
