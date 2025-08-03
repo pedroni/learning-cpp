@@ -1,5 +1,5 @@
-#include <cstddef>
 #include <iostream>
+#include <stdexcept>
 
 using namespace std;
 
@@ -62,6 +62,18 @@ public:
   void printTail() { cout << "Tail: " << this->tail->value << endl; }
   void printLength() { cout << "Length: " << this->length << endl; }
 
+  void prepend(int value) {
+    Node *temp = new Node(value);
+
+    if (this->tail == NULL) {
+      this->tail = temp;
+    }
+
+    temp->next = this->head;
+    this->head = temp;
+    this->length++;
+  }
+
   void append(int value) {
     Node *newNode = new Node(value);
 
@@ -74,6 +86,24 @@ public:
     }
 
     this->length++;
+  }
+
+  void deleteFirst() {
+    if (this->head == NULL) {
+      return;
+    }
+
+    Node *next = this->head->next;
+    if (next == NULL) {
+      delete next;
+      this->head = this->tail = NULL;
+      this->length = 0;
+      return;
+    }
+
+    delete this->head;
+    this->head = next;
+    this->length--;
   }
 
   void deleteLast() {
@@ -116,25 +146,50 @@ public:
     // update the length
     this->length--;
   }
+
+  Node *get(int index) {
+    if (index < 0 || index > this->length - 1) {
+      return NULL;
+    }
+
+    int currentIndex = 0;
+    Node *temp = this->head;
+    while (temp) {
+      if (currentIndex == index) {
+        return temp;
+      }
+      temp = temp->next;
+
+      currentIndex++;
+    }
+
+    return NULL;
+  };
+
+  void set(int index, int value) {
+    if (index < 0 || index > this->length - 1) {
+      throw std::out_of_range("Index out of bounds");
+    }
+
+    Node *temp = this->get(index);
+    temp->value = value;
+  }
 };
 
 int main() {
+  LinkedList *myLinkedList = new LinkedList(0);
 
-  LinkedList *myLinkedList = new LinkedList(1);
+  myLinkedList->append(1);
   myLinkedList->append(2);
   myLinkedList->append(3);
   myLinkedList->append(4);
 
-  myLinkedList->deleteLast();
-  myLinkedList->printList();
+  myLinkedList->set(2, 555);
+  Node *printNode = myLinkedList->get(2);
+  if (printNode) {
+    cout << "print node: " << printNode->value << endl;
+  }
 
-  myLinkedList->deleteLast();
-  myLinkedList->printList();
-
-  myLinkedList->deleteLast();
-  myLinkedList->printList();
-
-  myLinkedList->deleteLast();
   myLinkedList->printList();
 
   cout << "Linked List :)" << endl;
