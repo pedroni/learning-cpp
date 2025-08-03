@@ -175,6 +175,33 @@ public:
     Node *temp = this->get(index);
     temp->value = value;
   }
+
+  void insert(int index, int value) {
+    if (index < 0 || index > this->length) {
+      throw out_of_range("Index out of bounds");
+    }
+
+    if (index == 0) {
+      this->prepend(value);
+      return;
+    }
+
+    if (index == this->length) {
+      this->append(value);
+      return;
+    }
+
+    Node *prev = this->get(index - 1);
+    Node *current = prev->next;
+
+    Node *newNode = new Node(value);
+    prev->next = newNode;
+    newNode->next = current;
+
+    this->length++;
+  }
+
+  int getLength() { return this->length; }
 };
 
 int main() {
