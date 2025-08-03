@@ -1,3 +1,4 @@
+#include <cstddef>
 #include <iostream>
 #include <stdexcept>
 
@@ -168,7 +169,7 @@ public:
 
   void set(int index, int value) {
     if (index < 0 || index > this->length - 1) {
-      throw std::out_of_range("Index out of bounds");
+      throw out_of_range("Index out of bounds");
     }
 
     Node *temp = this->get(index);
