@@ -201,6 +201,44 @@ public:
     this->length++;
   }
 
+  void deleteNode(int index) {
+    if (index < 0 || index > this->length - 1) {
+      throw out_of_range("Index out of bounds");
+    }
+
+    if (index == 0) {
+      this->deleteFirst();
+      return;
+    }
+
+    if (index == this->length - 1) {
+      this->deleteLast();
+      return;
+    }
+
+    int currentIndex = 0;
+    Node *current = this->head;
+
+    Node *prev;
+    while (current) {
+
+      // find previous item
+      if (currentIndex == index) {
+        Node *next = current->next;
+        delete current;
+        prev->next = next;
+        break;
+      }
+
+      prev = current;
+      current = current->next;
+
+      currentIndex++;
+    }
+
+    this->length--;
+  }
+
   int getLength() { return this->length; }
 };
 
@@ -212,7 +250,10 @@ int main() {
   myLinkedList->append(3);
   myLinkedList->append(4);
 
-  myLinkedList->set(2, 555);
+  myLinkedList->insert(myLinkedList->getLength() - 1, 1111);
+
+  myLinkedList->deleteNode(1);
+
   Node *printNode = myLinkedList->get(2);
   if (printNode) {
     cout << "print node: " << printNode->value << endl;
