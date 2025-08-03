@@ -11,7 +11,7 @@
     {
       "label": "C++ Watch and Run",
       "type": "shell",
-      "command": "bash -c 'g++ -std=c++98 -o main.o \"$1\" && ./main.o && fswatch -o \"$1\" | xargs -n1 -I{} sh -c \"clear && g++ -std=c++98 -o main.o \\\"$1\\\" && ./main.o\"' _ ${file}",
+      "command": "bash -c 'compile_and_run() { clear; pkill -f \"./main.o\" 2>/dev/null; g++ -std=c++98 -pedantic -o main.o \"$1\" && ./main.o & }; compile_and_run \"$1\"; fswatch -o \"$1\" | while read; do compile_and_run \"$1\"; done' _ ${file}",
       "group": {
         "isDefault": true,
         "kind": "build"
