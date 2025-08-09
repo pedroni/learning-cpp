@@ -56,6 +56,108 @@ vector<Node<T> *> breadthFirstWalk(Node<T> *node) {
   return results;
 };
 
+/**
+ * This function will run until there are values on the stack.
+ * To walk through the binary tree we first start from the root,
+ * the root will be our first value in the stack, the condition
+ * that we use to check if we still can "walk" on our binary tree
+ * is checking whether there are any value in the stack.
+ *
+ * When we start walking on the binary tree we first remove the most
+ * recent node that was added to the stack. In JS we can do `.pop`
+ * which will remove the most recent item from the array and return it
+ * at the same time.
+ *
+ * Once we have the current value on the stack we check the left and
+ * right values and push them onto our stack ONLY if they exist
+ *
+ * After pushing them to the stack we continue from those nodes
+ * we do the same thing that we did with our root until there are
+ * no more items on the stack. Thats why we have while(stack.length > 0)
+ */
+template <class T>
+vector<Node<T> > depthFirstWalkLoop(Node<T> *node) {
+  vector<Node<T> > results;
+
+  if (node == NULL) {
+    return results;
+  }
+
+  // you can only push or pop to a stack. This is an important definition.
+  // you can only add items to the top of the stack, and can only remove
+  // items from the top of the stack, you cannot mess with its beginnign
+  // nor with the middle of the stack.
+
+  // a stack is graphicaly represented vertically
+  //
+  // | d |
+  // | c |
+  // | b |
+  // | a |
+  //
+  // in this stack we have 4 items. the top most item is D, which is the last
+  // item in the stack, to perform soem work on a stack we start from
+  // the top most item, ALWAYS. Let's say we perform some work on D
+  // after D is finished we remove it from the stack resulting in
+  // the following stack:
+  //
+  // | c |
+  // | b |
+  // | a |
+  //
+  // we continue working on our stack from the last item always.
+
+  stack<Node<T> *> stack;
+
+  Node<T> *current;
+
+  stack.push(node);
+
+  while (!stack.empty()) {
+    // always get the top most element on a stack to be the current, while
+    // removing it from the stack if we were not working with js we could get
+    // the last item by doing
+
+    // pseudo-code
+    // stack[stack.length - 1]
+    // then we'd have to delete the top most item
+    // stack.removeLast()
+
+    current = stack.top();
+    results.push_back(*current);
+
+    stack.pop();
+
+    // never push to the stack if they don't exist
+    // because we want to walk through the left side first
+    // we first push to the stack the right first
+    // then the left side, this is because left will
+    // be added last to the stack, thus being the next
+    // one it will be worked on after the current node
+    if (current->right != NULL) {
+      stack.push(current->right);
+    }
+
+    if (current->left != NULL) {
+      stack.push(current->left);
+    }
+
+    // the reason we push left last is to end up with this stack
+    // | left  |
+    // | right |
+
+    // since left is added last, it will be the top most item in our stack.
+  }
+
+  // because of the while loop it will continue work until there is no more
+  // items in the stack we always remove the current item from the stack on the
+  // beginning but add more items to the stack as we walk down the tree. they're
+  // only added if they exist, so if they don't they arent added. Eventually the
+  // stack will have no values
+
+  return results;
+}
+
 template <class T>
 vector<Node<T> > depthFirstWalk(Node<T> *node) {
   // for depth first walk we can simply use a recursive approach
@@ -76,38 +178,6 @@ vector<Node<T> > depthFirstWalk(Node<T> *node) {
 
   for (int i = 0; i < right.size(); i++) {
     results.push_back(right[i]);
-  }
-
-  return results;
-}
-
-template <class T>
-vector<Node<T> > depthFirstWalkLoop(Node<T> *node) {
-  vector<Node<T> > results;
-
-  if (node == NULL) {
-    return results;
-  }
-
-  stack<Node<T> *> stack;
-
-  Node<T> *current;
-
-  stack.push(node);
-
-  while (!stack.empty()) {
-    current = stack.top();
-    results.push_back(*current);
-
-    stack.pop();
-
-    if (current->right != NULL) {
-      stack.push(current->right);
-    }
-
-    if (current->left != NULL) {
-      stack.push(current->left);
-    }
   }
 
   return results;
