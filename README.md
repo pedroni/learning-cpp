@@ -1,10 +1,10 @@
-# Learning C++ on Udemy
+# Learning C++
 
 The goal in learn C++ is to eventually be good enough at C++ so that I can work on the Forsaken World codebase while understand what I'm doing. The `C++98` standard is being used here because I want to learn on the constraints of an older environment.
 
 ## Using AI to learn
 
-There's a `CLAUDE.md` file, though this file is often used to code with Claude Code, it's here as a base prompt to copy paste on an AI chat and not to vibe-code.
+There's a `CLAUDE.md` and it's here as a base prompt to copy paste on an AI chat so that it can act as a professor and answer questions relating to C++. It's not here to vibe-code, using Claude Code.
 
 ## Executing commands
 
@@ -22,3 +22,10 @@ g++-15 -std=c++98 -o main.o main.cpp && ./main.o
 # any name
 bash -c 'fswatch -o "$1" | xargs -n1 -I{} sh -c "clear && g++-15 -std=c++98 -o main.o \"$1\" && ./main.o"' _ binary-tree.cpp
 ```
+
+## Resources
+
+These are links that helped me learn and understand DSA and C++.
+
+- [C++ Data Structures & Algorithms + LEETCODE Exercises](https://www.udemy.com/course/data-structures-algorithms-cpp), Scott Barret
+- [Binary Tree Algorithms for Technical Interviews](https://www.youtube.com/watch?v=fAAZixBzIAI), freeCodeCamp.org, Alvin Zablan

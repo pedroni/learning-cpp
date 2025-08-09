@@ -42,11 +42,6 @@ public:
   void printList() {
     Node *temp = head;
 
-    for (int i = 1; i < this->length * 3; i++) {
-      cout << "-";
-    }
-    cout << endl;
-
     cout << "(" << this->length << "): ";
     while (temp != NULL) {
       cout << temp->value;
@@ -56,6 +51,10 @@ public:
       }
     }
 
+    cout << endl;
+    for (int i = 1; i < (this->length + 2) * 3; i++) {
+      cout << "-";
+    }
     cout << endl;
   }
 
@@ -227,6 +226,76 @@ public:
   }
 
   int getLength() { return this->length; }
+
+  void reverse() {
+    if (this->length <= 1) {
+      return;
+    }
+
+    cout << "----------" << endl;
+    cout << "start reverse" << endl;
+
+    Node *current = this->head;
+
+    // swap head and tail
+    this->head = this->tail;
+    this->tail = current;
+
+    Node *before = NULL;
+    Node *after = current->next;
+
+    // visual algorithmic, imagine a linked list: 0,1,2,3
+    //
+    // this is how we start
+    // before  current after
+    // NULL     0 ->    1 -> 2 -> 3
+    //
+    // after the first iteration this is what we have, `[]` represents a broken
+    // linked list, the 0 no longer points to the next item properly, instead it
+    // points to null
+    //
+    //      before  current  after
+    // NULL <- 0 []   1  ->  2  -> 3
+    //
+    // on the second iteration we make 1 has the next pointer pointing to 0,
+    // which breaks the path to 2. 1 is no longer connected to 2
+    //
+    //            before  current  after
+    // NULL <- 0 <- 1   []  2  -> 3
+    //
+    // with these 3 helper variables: before, current and after
+    // on every iteration permits us to continue iterating through even with a
+    // broken path
+    //
+    // at the first iteration, we set the next pointer of 0 to NULL
+    // instead of "1", in this example 1 was previously the next item, now we
+    // set the before which is NULL to the current.
+    //
+    // at the second iteration, we set the next pointer of 1 to 0, instead of
+    // the "2" causing this to break the loop if we were using a while loop, in
+    // this case we continue iterating because we have the length information,
+    // and for each iteration we set the current pointer that we're working on
+    // to keep repeating these steps.
+    for (int i = 0; i < this->length; i++) {
+      // update after pointer, to the next of the current item
+      // we will soon lose the next current item, because it will be set to the
+      // before item
+      after = current->next;
+
+      // mark the current next item to be the before one.
+      // in the first iteration all we do is set this to null
+      // but in future occurences the next will be the before item
+      current->next = before;
+
+      // we've finished working on current, now current becomes the
+      // before item and we will start working on the after item
+      before = current;
+
+      // start working on the after item, mark current as after
+      current = after;
+    }
+    cout << "----------" << endl;
+  }
 };
 
 int main() {
@@ -237,14 +306,10 @@ int main() {
   myLinkedList->append(3);
   myLinkedList->append(4);
 
-  myLinkedList->insert(myLinkedList->getLength() - 1, 1111);
+  myLinkedList->printList();
 
-  myLinkedList->deleteNode(1);
-
-  Node *printNode = myLinkedList->get(2);
-  if (printNode) {
-    cout << "print node: " << printNode->value << endl;
-  }
+  cout << "Reverse it!" << endl;
+  myLinkedList->reverse();
 
   myLinkedList->printList();
 
