@@ -12,34 +12,59 @@ struct ListNode {
 
 class Solution {
 public:
+  /**
+   * Works by having two tracking variables. Slow and fast. Slow will walk one
+   * by one from head. And fast will walk two by two from head. Meaning it will
+   * go twice as fast as slow. It will only iterate when slow and fast are not
+   * NULL. Once it's NULL we know slow has reached the middle. Fast will be NULL
+   * once it goes over the tail node, the tail has next set to NULL, always.
+   */
   ListNode *middleNode(ListNode *head) {
+    ListNode *slow = head;
+    ListNode *fast = head;
+
+    if (head->next == NULL) {
+      return head;
+    }
+
+    while (slow && fast) {
+      slow = slow->next;
+      fast = fast->next->next;
+    }
+
+    return slow;
+  };
+
+  /**
+   * This was the first implementation I did, without help. Though it is not the
+   * most optimized, it did the job. It finds the middle node by first finding
+   * the length of the linked list using a loop. Then it calculates the middle
+   * of the linked list. After finding the middle it loops through the linked
+   * list again until it finds the middle item. Once it finds it we break out of
+   * the loop and return it. The problem here is that we use two loops, instead
+   * of one.
+   */
+  ListNode *middleNodeIterating(ListNode *head) {
     int length = 0;
     ListNode *temp = head;
+
     while (temp) {
       length++;
       temp = temp->next;
     }
 
-    cout << "length is " << length << endl;
-
     int middle = floor(length / 2);
 
     int current = 0;
+
     temp = head;
     while (temp) {
-      cout << "entering " << temp->val << endl;
-
       if (current == middle) {
         break;
       }
 
       current++;
       temp = temp->next;
-    }
-    cout << "middle is at " << middle << endl;
-
-    if (temp) {
-      cout << "middle has the value " << temp->val << endl;
     }
 
     return temp;
@@ -62,5 +87,11 @@ int main() {
 
   Solution solution;
 
-  solution.middleNode(NULL);
+  ListNode *middle = solution.middleNode(&zero);
+
+  if (middle) {
+    cout << "Found middle value: " << middle->val << endl;
+  } else {
+    cout << "Middle not found" << endl;
+  }
 }
