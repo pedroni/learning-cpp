@@ -95,7 +95,7 @@ public:
 
     Node *next = this->head->next;
     if (next == NULL) {
-      delete next;
+      delete this->head;
       this->head = this->tail = NULL;
       this->length = 0;
       return;
