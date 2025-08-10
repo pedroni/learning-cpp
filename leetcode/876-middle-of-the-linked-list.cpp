@@ -23,11 +23,7 @@ public:
     ListNode *slow = head;
     ListNode *fast = head;
 
-    if (head->next == NULL) {
-      return head;
-    }
-
-    while (slow && fast) {
+    while (fast != NULL && fast->next != NULL) {
       slow = slow->next;
       fast = fast->next->next;
     }
@@ -71,6 +67,15 @@ public:
   };
 };
 
+void printList(ListNode *node) {
+  ListNode *temp = node;
+  while (temp) {
+    cout << temp->val << " | ";
+    temp = temp->next;
+  }
+  cout << endl;
+}
+
 int main() {
   ListNode zero(0);
   ListNode one(1);
@@ -88,6 +93,8 @@ int main() {
   Solution solution;
 
   ListNode *middle = solution.middleNode(&zero);
+
+  printList(&zero);
 
   if (middle) {
     cout << "Found middle value: " << middle->val << endl;
