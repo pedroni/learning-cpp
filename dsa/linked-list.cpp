@@ -126,8 +126,9 @@ public:
 
     while (current->next) {
       if (current->next == this->tail) {
-        // found the item that hold tail as last, the penultimate. the second to
-        // last, from this moment we no longer need to continue iterating
+        // found the item that hold tail as last, the penultimate. the
+        // second to last, from this moment we no longer need to
+        // continue iterating
         break;
       }
 
@@ -137,7 +138,8 @@ public:
     // free up the memory of tail, we no longer use it
     delete this->tail;
 
-    // set next as NULL, we no longer use it, the next in this case was the tail
+    // set next as NULL, we no longer use it, the next in this case was the
+    // tail
     current->next = NULL;
 
     // make the tail be the current item
@@ -237,13 +239,6 @@ public:
 
     Node *current = this->head;
 
-    // swap head and tail
-    this->head = this->tail;
-    this->tail = current;
-
-    Node *before = NULL;
-    Node *after = current->next;
-
     // visual algorithmic, imagine a linked list: 0,1,2,3
     //
     // this is how we start
@@ -276,6 +271,14 @@ public:
     // this case we continue iterating because we have the length information,
     // and for each iteration we set the current pointer that we're working on
     // to keep repeating these steps.
+
+    // swap head and tail
+    this->head = this->tail;
+    this->tail = current;
+
+    Node *before = NULL;
+    Node *after = current->next;
+
     for (int i = 0; i < this->length; i++) {
       // update after pointer, to the next of the current item
       // we will soon lose the next current item, because it will be set to the
