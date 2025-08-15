@@ -23,6 +23,12 @@ g++-15 -std=c++98 -o main.o main.cpp && ./main.o
 bash -c 'fswatch -o "$1" | xargs -n1 -I{} sh -c "clear && g++-15 -std=c++98 -o main.o \"$1\" && ./main.o"' _ binary-tree.cpp
 ```
 
+## Whiteboard
+
+Some solutions were first discovered using a "whiteboard" approach. When seeing a `.cpp` file you might encounted a `.pdf` file that contains the whiteboard final file for that specific problem.
+
+For the Whiteboard I'm using an iPad Air (4th generation) with a "WB" Pencil, and the Notes+ app.
+
 ## Resources
 
 These are links that helped me learn and understand DSA and C++.
