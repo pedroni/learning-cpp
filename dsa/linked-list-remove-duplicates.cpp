@@ -101,25 +101,18 @@ public:
     Node *outer = this->head;
 
     while (outer != NULL) {
+      Node *inner = outer;
 
-      Node *inner = this->head;
-      Node *previousInner = NULL;
+      while (inner->next != NULL) {
+        if (outer->value == inner->next->value) {
+          Node *temp;
+          temp = inner->next;
 
-      int count = 0;
+          inner->next = inner->next->next;
+          delete temp;
 
-      while (inner != NULL) {
-        if (outer->value == inner->value) {
-          count++;
-        }
-
-        if (count >= 2 && previousInner != NULL) {
-          previousInner->next = inner->next;
-          delete inner;
           this->length--;
-          count--;
-          inner = previousInner->next;
         } else {
-          previousInner = inner;
           inner = inner->next;
         }
       }
