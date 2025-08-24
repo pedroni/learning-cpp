@@ -116,11 +116,8 @@ public:
           previousInner->next = inner->next;
           delete inner;
           this->length--;
-          count = 0;
-          // could this be improved? I'm restarting to the begginning of the
-          // loop
-          inner = this->head;
-          previousInner = NULL;
+          count--;
+          inner = previousInner->next;
         } else {
           previousInner = inner;
           inner = inner->next;
