@@ -1,3 +1,4 @@
+#include <cmath>
 #include <iostream>
 using namespace std;
 
@@ -33,7 +34,42 @@ public:
     return newNode;
   }
 
-  int getDecimalValue(ListNode *head) { return 0; };
+  int getDecimalValue(ListNode *head) {
+
+    // first I will try with length. That will be the easiest one. I can use kth
+    // strategy
+
+    int length = 0;
+    ListNode *temp = head;
+
+    while (temp != NULL) {
+      length++;
+      temp = temp->next;
+    }
+
+    // the first item is the biggest value, the last item is 1
+    // e.g. binary:  1 1 1 1
+    //      decimal: 8+4+2+1=15
+    //      k pos:   3 2 1 0
+    // to find the decimal value of a position you use k^2, where k is the index
+    // position backwards of the items
+
+    int decimalValue = 0;
+    int i = 1;
+    int k = length;
+
+    temp = head;
+
+    while (temp != NULL) {
+      k = length - i;
+      cout << k << endl;
+      decimalValue += temp->val * pow(2, k);
+      temp = temp->next;
+      i++;
+    }
+
+    return decimalValue;
+  };
 
   void printList() {
     ListNode *temp = this->head;
