@@ -21,7 +21,6 @@ public:
 
     ListNode *newNode = new ListNode(value);
     if (this->head == NULL) {
-      cout << "here" << endl;
       head = newNode;
     } else {
       ListNode *currentNode = head;
@@ -35,6 +34,28 @@ public:
   }
 
   int getDecimalValue(ListNode *head) {
+    ListNode *temp = head;
+
+    int sum = 0;
+    while (temp != NULL) {
+      // always multiply the previous value by 2
+      sum *= 2;
+
+      // add 1 in case its truthy
+      if (temp->val != 0) {
+        sum++;
+      }
+
+      // could also be written as because val is either 1 or 0
+      // sum+=temp->val;
+
+      temp = temp->next;
+    }
+
+    return sum;
+  }
+
+  int getDecimalValueWithLength(ListNode *head) {
 
     // first I will try with length. That will be the easiest one. I can use kth
     // strategy
@@ -89,16 +110,16 @@ public:
 int main() {
   Solution solution;
 
-  int finalResult = 15;
-
   solution.append(1);
   solution.append(1);
-  solution.append(1);
+  solution.append(0);
   solution.append(1);
 
   int decimalValue = solution.getDecimalValue(solution.head);
 
   solution.printList();
+
+  int finalResult = solution.getDecimalValueWithLength(solution.head);
 
   cout << "Expected: " << finalResult << endl;
   cout << "Got: " << decimalValue << endl;
