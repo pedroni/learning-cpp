@@ -4,7 +4,7 @@
     {
       "label": "C++ Watch and Run",
       "type": "shell",
-      "command": "bash -c 'compile_and_run() { clear; pkill -f \"${workspaceFolder}/main.o\" 2>/dev/null; g++-15 -std=c++98 -pedantic-errors -Wall -Werror -o ${workspaceFolder}/main.o \"$1\" && ${workspaceFolder}/main.o & }; compile_and_run \"$1\"; fswatch -o \"$1\" | while read; do compile_and_run \"$1\"; done' _ ${file}",
+      "command": "bash -c 'compile_and_run() { clear; pkill -f \"${workspaceFolder}/main.o\" 2>/dev/null; g++-15 -std=c++98 -pedantic-errors -Wall -o ${workspaceFolder}/main.o \"$1\" && ${workspaceFolder}/main.o & }; compile_and_run \"$1\"; fswatch -o \"$1\" | while read; do compile_and_run \"$1\"; done' _ ${file}",
       "presentation": {
         "reveal": "silent",
         "focus": false
