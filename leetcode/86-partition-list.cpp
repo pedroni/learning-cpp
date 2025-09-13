@@ -48,30 +48,72 @@ public:
     return newNode;
   }
 
-  ListNode *partition(ListNode *head, int x) { return head; }
+  ListNode *partition(ListNode *head, int x) {
+    if (head == NULL) {
+      return head;
+    }
+    if (head->next == NULL) {
+      return head;
+    }
+
+    ListNode *temp = head;
+
+    ListNode *smallPrev = new ListNode();
+    ListNode *smallHead = smallPrev;
+
+    ListNode *bigPrev = new ListNode();
+    ListNode *bigHead = bigPrev;
+
+    while (temp) {
+      // such a chame, i had to clone the node... how can i achieve without a
+      // copy? is it possible
+      ListNode *current = new ListNode(temp->val) if (temp->val < x) {
+        smallPrev->next = current;
+        smallPrev = current;
+      }
+      else {
+        bigPrev->next = current;
+        bigPrev = current;
+      }
+
+      ListNode *toDelete = temp; // memory clean up
+      temp = temp->next;
+      delete toDelete; // memory clean up
+    }
+
+    smallHead = smallHead->next;
+    bigHead = bigHead->next;
+
+    smallPrev->next = bigHead;
+
+    if (smallHead == NULL) {
+      return bigHead;
+    }
+    return smallHead;
+  }
 };
 
 int main() {
   Solution solution;
 
-  ListNode *head = solution.append(3);
-  solution.append(8);
-  solution.append(5);
-  solution.append(10);
-  solution.append(2);
-  solution.append(1);
-
-  printList(head);
-  ListNode *result = solution.partition(solution.head, 5);
-  printList(result);
-
-  // ListNode *head = solution.append(0);
+  // ListNode *head = solution.append(3);
+  // solution.append(8);
+  // solution.append(5);
+  // solution.append(10);
+  // solution.append(2);
   // solution.append(1);
 
   // printList(head);
-  // ListNode *result = solution.partition(solution.head, 2);
+  // ListNode *result = solution.partition(solution.head, 5);
   // printList(result);
 
+  ListNode *head = solution.append(1);
+  solution.append(1);
+
+  printList(head);
+  ListNode *result = solution.partition(solution.head, 0);
+  printList(result);
+
   cout << "------------------------------" << endl;
-  cout << "Are you reading this correctly?" << endl;
+  cout << "Are you test reading this correctly?" << endl;
 }
