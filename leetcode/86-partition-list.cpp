@@ -56,64 +56,64 @@ public:
       return head;
     }
 
+    ListNode smallHead = ListNode(0);
+    ListNode bigHead = ListNode(0);
+
+    ListNode *smallPrev = &smallHead;
+    ListNode *bigPrev = &bigHead;
+
     ListNode *temp = head;
 
-    ListNode *smallPrev = new ListNode();
-    ListNode *smallHead = smallPrev;
-
-    ListNode *bigPrev = new ListNode();
-    ListNode *bigHead = bigPrev;
-
     while (temp) {
-      // such a chame, i had to clone the node... how can i achieve without a
-      // copy? is it possible
-      ListNode *current = new ListNode(temp->val) if (temp->val < x) {
-        smallPrev->next = current;
-        smallPrev = current;
-      }
-      else {
-        bigPrev->next = current;
-        bigPrev = current;
+      if (temp->val < x) {
+        smallPrev->next = temp;
+        smallPrev = temp;
+      } else {
+        bigPrev->next = temp;
+        bigPrev = temp;
       }
 
-      ListNode *toDelete = temp; // memory clean up
       temp = temp->next;
-      delete toDelete; // memory clean up
     }
 
-    smallHead = smallHead->next;
-    bigHead = bigHead->next;
+    // end the second list. end the big list. this is important we dont want to
+    // continue going, this is the end of the list.
+    bigPrev->next = NULL;
 
-    smallPrev->next = bigHead;
+    // connects the head of big with tail of small
+    smallPrev->next =
+        bigHead.next; // use big head next, because big head is a dummy node
 
-    if (smallHead == NULL) {
-      return bigHead;
-    }
-    return smallHead;
+    return smallHead.next;
   }
 };
 
 int main() {
   Solution solution;
 
-  // ListNode *head = solution.append(3);
-  // solution.append(8);
-  // solution.append(5);
-  // solution.append(10);
-  // solution.append(2);
-  // solution.append(1);
-
-  // printList(head);
-  // ListNode *result = solution.partition(solution.head, 5);
-  // printList(result);
-
-  ListNode *head = solution.append(1);
+  ListNode *head = solution.append(3);
+  solution.append(8);
+  solution.append(5);
+  solution.append(10);
+  solution.append(2);
   solution.append(1);
 
   printList(head);
-  ListNode *result = solution.partition(solution.head, 0);
+  ListNode *result = solution.partition(solution.head, 5);
   printList(result);
 
+  // ListNode *head = solution.append(1);
+  // solution.append(1);
+
+  // printList(head);
+  // ListNode *result = solution.partition(solution.head, 0);
+  // printList(result);
+
   cout << "------------------------------" << endl;
-  cout << "Are you test reading this correctly?" << endl;
+  cout << "Are you reading things correctly?" << endl;
+
+  // doesn't look like i did. even the warning was wrong. I had this warning
+  // because i often fucked up with the test code, swaping variables for
+  // example, i'd `cout << "small: " < big`, so i read on the terminal that
+  // small was a value, but actually i was printing big...
 }
