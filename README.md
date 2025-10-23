@@ -1,6 +1,10 @@
 # Learning C++
 
-The goal in learn C++ is to eventually be good enough at C++ so that I can work on the Forsaken World codebase while understand what I'm doing. The `C++98` standard is being used here because I want to learn on the constraints of an older environment.
+The goal to learn C++ is to eventually be good enough at C++ so that I can work on the Forsaken World codebase while understand what I'm doing. The `C++98` standard is being used here because I want to learn on the constraints of an older environment.
+
+## Learning SDL
+
+https://github.com/pedroni/learning-cpp-sdl
 
 ## Using AI to learn
 
