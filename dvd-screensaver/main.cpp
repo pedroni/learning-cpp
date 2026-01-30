@@ -1,7 +1,14 @@
 #include <cstdio>
 #include <raylib.h>
 
-using namespace std;
+Color GetRandomColor(){
+    Color color;
+    color.r = GetRandomValue(0, 255);
+    color.g = GetRandomValue(0, 255);
+    color.b = GetRandomValue(0, 255);
+    color.a = 255;
+    return color;
+}
 
 int main() {
   const int screenWidth = 800;
@@ -39,6 +46,8 @@ int main() {
 
   bool debugging = false;
 
+  Color dvdColor = WHITE;
+
   // Main game loop
   while (!WindowShouldClose()) {
 
@@ -60,18 +69,20 @@ int main() {
     if (dvdCollision.x >= screenWidth - dvdCollision.width ||
         dvdCollision.x <= 0) {
       speedX = -1 * speedX;
+      dvdColor = GetRandomColor();
     }
 
     if (dvdCollision.y >= screenHeight - dvdCollision.height ||
         dvdCollision.y <= 0) {
       speedY = -1 * speedY;
+      dvdColor = GetRandomColor();
     }
 
     // Draw
     BeginDrawing();
     ClearBackground(BLACK);
 
-    DrawTexturePro(dvd, dvdSrc, dvdDest, dvdOrigin, 0, RED);
+    DrawTexturePro(dvd, dvdSrc, dvdDest, dvdOrigin, 0, dvdColor);
 
     if (debugging) {
       DrawRectangleLinesEx(dvdCollision, 1.f, YELLOW);
@@ -79,6 +90,9 @@ int main() {
 
     EndDrawing();
   }
+
+  // good practice to remember to free the resources
+  UnloadTexture(dvd);
 
   // De-Initialization
   CloseWindow();
