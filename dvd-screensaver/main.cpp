@@ -11,32 +11,59 @@ int main() {
 
   SetTargetFPS(60);
 
-  int rectWidth = 50;
-  int rectHeight = 50;
-
-  int posX = 0;
-  int posY = 0;
-
   int speedX = 2;
   int speedY = 2;
 
   Texture2D dvd = LoadTexture("./dvd.png");
 
+  Rectangle dvdSrc;
+  dvdSrc.x = 0;
+  dvdSrc.y = 0;
+  dvdSrc.width = (float)dvd.width;
+  dvdSrc.height = (float)dvd.height;
+
+  Rectangle dvdDest;
+  dvdDest.width = 50.;
+  dvdDest.height = (50.f * dvd.height) / dvd.width;
+
+  Rectangle dvdCollision;
+
+  dvdCollision.width = 43;
+  dvdCollision.height = 22;
+  dvdCollision.x = 0;
+  dvdCollision.y = 0;
+
+  Vector2 dvdOrigin;
+  dvdOrigin.x = 0;
+  dvdOrigin.y = 0;
+
+  bool debugging = false;
+
   // Main game loop
   while (!WindowShouldClose()) {
 
+    // event handler
+    if (IsKeyPressed(KEY_D)) {
+      debugging = !debugging;
+    }
+
     // Update
-    posX += speedX;
-    posY += speedY;
+    dvdCollision.x += speedX;
+    dvdCollision.y += speedY;
+
+    dvdDest.x = dvdCollision.x - 5;
+    dvdDest.y = dvdCollision.y - 15;
 
     // remember to always add \n after printing so that the buffer gets flushed
-    // printf("x(%d) y(%d)\n", posX, posY);
+    printf("x(%f) y(%f)\n", dvdCollision.x, dvdCollision.y);
 
-    if (posX >= screenWidth - rectWidth || posX <= 0) {
+    if (dvdCollision.x >= screenWidth - dvdCollision.width ||
+        dvdCollision.x <= 0) {
       speedX = -1 * speedX;
     }
 
-    if (posY >= screenHeight - rectHeight || posY <= 0) {
+    if (dvdCollision.y >= screenHeight - dvdCollision.height ||
+        dvdCollision.y <= 0) {
       speedY = -1 * speedY;
     }
 
@@ -44,9 +71,11 @@ int main() {
     BeginDrawing();
     ClearBackground(BLACK);
 
-    DrawTexture(dvd,  posX,  posY,  WHITE);
+    DrawTexturePro(dvd, dvdSrc, dvdDest, dvdOrigin, 0, RED);
 
-    // DrawRectangle(posX, posY, rectWidth, rectHeight, WHITE);
+    if (debugging) {
+      DrawRectangleLinesEx(dvdCollision, 1.f, YELLOW);
+    }
 
     EndDrawing();
   }
