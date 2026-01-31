@@ -26,7 +26,7 @@ class DvdScreensaver {
 public:
   DvdScreensaver() : config_(Config::instance()) {
     printf("DvdScreensaver started!\n");
-    texture_ = LoadTexture("./dvd.png");
+    texture_ = LoadTexture("./assets/dvd.png");
 
     srcRec_.x = 0;
     srcRec_.y = 0;
