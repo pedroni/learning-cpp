@@ -1,25 +1,28 @@
 #include <cstdio>
 #include <raylib.h>
 
-Color GetRandomColor(){
-    Color color;
-    color.r = GetRandomValue(0, 255);
-    color.g = GetRandomValue(0, 255);
-    color.b = GetRandomValue(0, 255);
-    color.a = 255;
-    return color;
+Color GetRandomColor() {
+  Color color;
+  color.r = GetRandomValue(0, 255);
+  color.g = GetRandomValue(0, 255);
+  color.b = GetRandomValue(0, 255);
+  color.a = 255;
+  return color;
 }
 
 int main() {
-  const int screenWidth = 800;
-  const int screenHeight = 450;
+  const int SCREN_WIDTH = 800;
+  const int SCREEN_HEIGHT = 450;
+  const float INITIAL_SPEED = 2;
 
-  InitWindow(screenWidth, screenHeight, "DVD Screensaver");
+  InitWindow(SCREN_WIDTH, SCREEN_HEIGHT, "DVD Screensaver");
 
   SetTargetFPS(60);
 
   int speedX = 2;
   int speedY = 2;
+
+  int acceleration = 1;
 
   Texture2D dvd = LoadTexture("./dvd.png");
 
@@ -56,23 +59,31 @@ int main() {
       debugging = !debugging;
     }
 
+    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+      acceleration += 1;
+    } else if (IsMouseButtonPressed(MOUSE_RIGHT_BUTTON)) {
+      acceleration -= 1;
+    }
+
     // Update
-    dvdCollision.x += speedX;
-    dvdCollision.y += speedY;
+    dvdCollision.x += speedX * acceleration;
+    dvdCollision.y += speedY * acceleration;
 
     dvdDest.x = dvdCollision.x - 5;
     dvdDest.y = dvdCollision.y - 15;
 
     // remember to always add \n after printing so that the buffer gets flushed
-    printf("x(%f) y(%f)\n", dvdCollision.x, dvdCollision.y);
+    if (debugging) {
+      printf("x(%f) y(%f)\n", dvdCollision.x, dvdCollision.y);
+    }
 
-    if (dvdCollision.x >= screenWidth - dvdCollision.width ||
+    if (dvdCollision.x >= SCREN_WIDTH - dvdCollision.width ||
         dvdCollision.x <= 0) {
       speedX = -1 * speedX;
       dvdColor = GetRandomColor();
     }
 
-    if (dvdCollision.y >= screenHeight - dvdCollision.height ||
+    if (dvdCollision.y >= SCREEN_HEIGHT - dvdCollision.height ||
         dvdCollision.y <= 0) {
       speedY = -1 * speedY;
       dvdColor = GetRandomColor();
