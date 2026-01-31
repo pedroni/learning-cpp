@@ -1,5 +1,5 @@
-#include "config.h"
-#include "menu.h"
+#include "src/config.h"
+#include "src/menu.h"
 #include <raylib.h>
 
 int main() {
