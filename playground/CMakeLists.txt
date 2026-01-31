@@ -8,8 +8,11 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(RAYLIB REQUIRED raylib)
 
-# Add executable
-add_executable(${PROJECT_NAME} main.cpp)
+# Get all cpp files
+file(GLOB SOURCES "*.cpp")
+
+# Create executable
+add_executable(${PROJECT_NAME} ${SOURCES})
 
 # Link raylib with explicit library paths
 target_link_libraries(${PROJECT_NAME} ${RAYLIB_LDFLAGS})
