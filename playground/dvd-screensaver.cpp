@@ -5,39 +5,39 @@
 #include <cstdio>
 
 void DvdScreensaver::update() {
-  if (_config.isDebugging()) {
-    printf("x(%f) y(%f)\n", _collisionRec.x, _collisionRec.y);
+  if (config_.isDebugging()) {
+    printf("x(%f) y(%f)\n", collisionRec_.x, collisionRec_.y);
   }
   if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-    _acceleration += 1;
+    acceleration_ += 1;
   } else if (IsMouseButtonPressed(MOUSE_RIGHT_BUTTON)) {
-    _acceleration -= 1;
+    acceleration_ -= 1;
   }
 
   // Update
-  _collisionRec.x += _speedX * _acceleration;
-  _collisionRec.y += _speedY * _acceleration;
+  collisionRec_.x += speedX_ * acceleration_;
+  collisionRec_.y += speedY_ * acceleration_;
 
-  _destRec.x = _collisionRec.x - 5;
-  _destRec.y = _collisionRec.y - 15;
+  destRec_.x = collisionRec_.x - 5;
+  destRec_.y = collisionRec_.y - 15;
 
-  if (_collisionRec.x >= _config.SCREN_WIDTH - _collisionRec.width ||
-      _collisionRec.x <= 0) {
-    _speedX = -1 * _speedX;
-    _color = GetRandomColor();
+  if (collisionRec_.x >= config_.SCREN_WIDTH - collisionRec_.width ||
+      collisionRec_.x <= 0) {
+    speedX_ = -1 * speedX_;
+    color_ = GetRandomColor();
   }
 
-  if (_collisionRec.y >= _config.SCREEN_HEIGHT - _collisionRec.height ||
-      _collisionRec.y <= 0) {
-    _speedY = -1 * _speedY;
-    _color = GetRandomColor();
+  if (collisionRec_.y >= config_.SCREEN_HEIGHT - collisionRec_.height ||
+      collisionRec_.y <= 0) {
+    speedY_ = -1 * speedY_;
+    color_ = GetRandomColor();
   }
 }
 
 void DvdScreensaver::render() {
-  DrawTexturePro(_texture, _srcRec, _destRec, _origin, 0, _color);
+  DrawTexturePro(texture_, srcRec_, destRec_, origin_, 0, color_);
 
-  if (_config.isDebugging()) {
-    DrawRectangleLinesEx(_collisionRec, 1.f, YELLOW);
+  if (config_.isDebugging()) {
+    DrawRectangleLinesEx(collisionRec_, 1.f, YELLOW);
   }
 }

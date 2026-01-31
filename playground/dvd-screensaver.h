@@ -5,47 +5,47 @@
 #include <cstdio>
 
 class DvdScreensaver {
-  Color _color;
+  Color color_;
 
-  Texture _texture;
+  Texture texture_;
 
-  Rectangle _srcRec;
-  Rectangle _destRec;
+  Rectangle srcRec_;
+  Rectangle destRec_;
 
-  Rectangle _collisionRec;
+  Rectangle collisionRec_;
 
-  Vector2 _origin;
+  Vector2 origin_;
 
-  int _speedX = 2;
-  int _speedY = 2;
+  int speedX_ = 2;
+  int speedY_ = 2;
 
-  int _acceleration = 1;
+  int acceleration_ = 1;
 
-  Config &_config;
+  Config &config_;
 
 public:
-  DvdScreensaver() : _config(Config::instance()) {
+  DvdScreensaver() : config_(Config::instance()) {
     printf("DvdScreensaver started!\n");
-    _texture = LoadTexture("./dvd.png");
+    texture_ = LoadTexture("./dvd.png");
 
-    _srcRec.x = 0;
-    _srcRec.y = 0;
-    _srcRec.width = (float)_texture.width;
-    _srcRec.height = (float)_texture.height;
+    srcRec_.x = 0;
+    srcRec_.y = 0;
+    srcRec_.width = (float)texture_.width;
+    srcRec_.height = (float)texture_.height;
 
-    _destRec.width = 50.;
-    _destRec.height = (50.f * _texture.height) / _texture.width;
+    destRec_.width = 50.;
+    destRec_.height = (50.f * texture_.height) / texture_.width;
 
-    _collisionRec.width = 43;
-    _collisionRec.height = 22;
-    _collisionRec.x = 0;
-    _collisionRec.y = 0;
+    collisionRec_.width = 43;
+    collisionRec_.height = 22;
+    collisionRec_.x = 0;
+    collisionRec_.y = 0;
 
-    _origin.x = 0;
-    _origin.y = 0;
+    origin_.x = 0;
+    origin_.y = 0;
   }
 
-  ~DvdScreensaver() { UnloadTexture(_texture); }
+  ~DvdScreensaver() { UnloadTexture(texture_); }
 
   void update();
 
