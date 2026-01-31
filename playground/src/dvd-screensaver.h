@@ -1,10 +1,11 @@
 #pragma once
 
 #include "config.h"
+#include "entity.h"
 #include "raylib.h"
 #include <cstdio>
 
-class DvdScreensaver {
+class DvdScreensaver : public Entity {
   Color color_;
 
   Texture texture_;
@@ -24,7 +25,7 @@ class DvdScreensaver {
   Config &config_;
 
 public:
-  DvdScreensaver() : config_(Config::instance()) {
+  DvdScreensaver() : color_(WHITE), config_(Config::instance()) {
     printf("DvdScreensaver started!\n");
     texture_ = LoadTexture("./assets/dvd.png");
 

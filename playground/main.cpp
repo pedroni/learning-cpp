@@ -1,5 +1,5 @@
 #include "config.h"
-#include "dvd-screensaver.h"
+#include "menu.h"
 #include <raylib.h>
 
 int main() {
@@ -12,8 +12,9 @@ int main() {
 
   SetTargetFPS(60);
 
-  DvdScreensaver dvdScreensaver;
+  Menu menu;
 
+  SetExitKey(0);
   // Main game loop
   while (!WindowShouldClose()) {
 
@@ -22,13 +23,13 @@ int main() {
       config.setDebugging(!config.isDebugging());
     }
 
-    dvdScreensaver.update();
+    menu.update();
 
     // Draw
     BeginDrawing();
     ClearBackground(BLACK);
 
-    dvdScreensaver.render();
+    menu.render();
 
     EndDrawing();
   }

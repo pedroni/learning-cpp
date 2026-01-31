@@ -8,6 +8,7 @@ void DvdScreensaver::update() {
   if (config_.isDebugging()) {
     printf("x(%f) y(%f)\n", collisionRec_.x, collisionRec_.y);
   }
+
   if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
     acceleration_ += 1;
   } else if (IsMouseButtonPressed(MOUSE_RIGHT_BUTTON)) {
