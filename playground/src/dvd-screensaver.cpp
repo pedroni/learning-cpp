@@ -22,7 +22,7 @@ void DvdScreensaver::update() {
   destRec_.x = collisionRec_.x - 5;
   destRec_.y = collisionRec_.y - 15;
 
-  if (collisionRec_.x >= config_.SCREN_WIDTH - collisionRec_.width ||
+  if (collisionRec_.x >= config_.SCREEN_WIDTH - collisionRec_.width ||
       collisionRec_.x <= 0) {
     speedX_ = -1 * speedX_;
     color_ = GetRandomColor();

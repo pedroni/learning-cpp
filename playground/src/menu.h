@@ -3,7 +3,9 @@
 #include "config.h"
 #include "dvd-screensaver.h"
 #include "entity.h"
+#include "pong.h"
 #include "raylib.h"
+#include <set>
 #include <string>
 #include <vector>
 
@@ -66,15 +68,17 @@ public:
     }
 
     int menuWidth = MeasureText("Menu", FONT_SIZE);
-    DrawText("Menu", (config_.SCREN_WIDTH / 2) - (menuWidth / 2), 40, FONT_SIZE,
-             hoveringAction_ == -1 ? YELLOW : WHITE);
+    DrawText("Menu", (config_.SCREEN_WIDTH / 2) - ((float)menuWidth / 2), 40,
+             FONT_SIZE, hoveringAction_ == -1 ? YELLOW : WHITE);
 
     for (size_t i = 0; i < options_.size(); i++) {
       MenuOption option = options_[i];
 
       int nameWidth = MeasureText(option.name.c_str(), FONT_SIZE);
-      DrawText(option.name.c_str(), (config_.SCREN_WIDTH / 2) - (nameWidth / 2),
-               80, FONT_SIZE, hoveringAction_ == i ? YELLOW : WHITE);
+      DrawText(option.name.c_str(),
+               (config_.SCREEN_WIDTH / 2) - ((float)nameWidth / 2),
+               (FONT_SIZE + 10) * (i + 1) + 80, FONT_SIZE,
+               hoveringAction_ == i ? YELLOW : WHITE);
     }
 
     return;

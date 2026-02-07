@@ -7,8 +7,8 @@ private:
   Config() { printf("Config initialized.\n"); }
 
 public:
-  const int SCREN_WIDTH = 800;
-  const int SCREEN_HEIGHT = 450;
+  const float SCREEN_WIDTH = 800;
+  const float SCREEN_HEIGHT = 450;
 
   // Scott Meyers Singleton pattern
   static Config &instance() {

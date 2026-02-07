@@ -8,7 +8,7 @@ int main() {
   // using the existing reference
   Config &config = Config::instance();
 
-  InitWindow(config.SCREN_WIDTH, config.SCREEN_HEIGHT, "DVD Screensaver");
+  InitWindow(config.SCREEN_WIDTH, config.SCREEN_HEIGHT, "DVD Screensaver");
 
   SetTargetFPS(60);
 
