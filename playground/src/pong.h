@@ -1,16 +1,17 @@
 #pragma once
 
+#include <cstdio>
+#include <string>
+#include <vector>
+
 #include "RecEntity.h"
 #include "config.h"
 #include "entity.h"
 #include "raylib.h"
 #include "raymath.h"
-#include <cstdio>
-#include <string>
-#include <vector>
 
 enum PongDifficulty { EASY, HARD };
-enum PongState { RUNNING, PAUSED, LOST };
+enum PongState { RUNNING, PAUSED, LOST, WON };
 
 class Pong : public Entity {
   const float BORDER_SIZE = 5;
@@ -27,8 +28,8 @@ class Pong : public Entity {
 
   Config &config_;
 
-  PongDifficulty difficulty = PongDifficulty::EASY;
-  PongState state_ = PongState::RUNNING;
+  PongDifficulty difficulty_ = PongDifficulty::HARD;
+  PongState state_ = PongState::PAUSED;
 
   // used to identify when the ball hits each side
   RecEntity topBorderRec_;
@@ -40,19 +41,21 @@ class Pong : public Entity {
   float playerSpeed = 0;
 
   RecEntity enemyRec_;
-  float enemySpeed = PLAYER_SPEED * 1.2;
+  float enemySpeed_;
 
   RecEntity ballRec_;
-  float ballSpeedX_ = BALL_SPEED;
-  float ballSpeedY_ = BALL_SPEED;
+  float ballSpeedX_;
+  float ballSpeedY_;
 
   // vector cannot construct Entity therefore we need a pointer of Entity
   std::vector<Entity *> entities_;
 
-  int playerScore = 0;
-  int enemyScore = 0;
+  int playerScore_ = 0;
+  int enemyScore_ = 0;
 
-  void initializeRecs_() {
+  bool showHelp_ = true;
+
+  void reset_() {
     topBorderRec_.width = config_.SCREEN_WIDTH;
     topBorderRec_.height = BORDER_SIZE;
 
@@ -83,6 +86,21 @@ class Pong : public Entity {
     enemyRec_.width = PLAYER_WIDTH;
     enemyRec_.height = PLAYER_HEIGHT;
     enemyRec_.color = RED;
+
+    resetSpeeds_();
+    resetScore_();
+  }
+
+  void resetSpeeds_() {
+    enemySpeed_ = PLAYER_SPEED * 1.2;
+
+    ballSpeedX_ = BALL_SPEED;
+    ballSpeedY_ = BALL_SPEED;
+  }
+
+  void resetScore_() {
+    playerScore_ = 0;
+    enemyScore_ = 0;
   }
 
   void resetBall_() {
@@ -95,7 +113,7 @@ class Pong : public Entity {
 
 public:
   Pong() : config_(Config::instance()) {
-    initializeRecs_();
+    reset_();
 
     entities_.push_back(&topBorderRec_);
     entities_.push_back(&bottomBorderRec_);
@@ -124,23 +142,34 @@ public:
 
     if (CheckCollisionRecs(ballRec_.getRec(), rightBorderRec_.getRec())) {
       resetBall_();
-      state_ = PAUSED;
-      playerScore++;
+      state_ = WON;
+      playerScore_++;
     }
 
     if (CheckCollisionRecs(ballRec_.getRec(), leftBorderRec_.getRec())) {
       resetBall_();
-      state_ = PAUSED;
-      enemyScore++;
+      state_ = LOST;
+      enemyScore_++;
     }
   }
 
   void update() {
+    if ((IsKeyDown(KEY_LEFT_SHIFT) || IsKeyDown(KEY_RIGHT_SHIFT)) &&
+        IsKeyPressed(KEY_SLASH)) {
+      showHelp_ = !showHelp_;
+    }
+
+    if (IsKeyPressed(KEY_PERIOD)) {
+      reset_();
+      state_ = PAUSED;
+      difficulty_ = difficulty_ == EASY ? HARD : EASY;
+    }
+
     if ((IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_SPACE))) {
-      if (state_ == RUNNING) {
-        state_ = PAUSED;
-      } else if (state_ == PAUSED) {
+      if (state_ != RUNNING) {
         state_ = RUNNING;
+      } else if (state_ == RUNNING) {
+        state_ = PAUSED;
       }
     }
 
@@ -159,16 +188,16 @@ public:
 
     if (IsKeyDown(KEY_R)) {
       // restart the game;
-      initializeRecs_();
+      reset_();
     }
 
     // basic ai just goes back and forth
     if (enemyRec_.y < 0 ||
         enemyRec_.y > config_.SCREEN_HEIGHT - enemyRec_.height) {
-      enemySpeed *= -1;
+      enemySpeed_ *= -1;
     }
 
-    enemyRec_.y += enemySpeed;
+    enemyRec_.y += enemySpeed_;
 
     if (playerRec_.y < 0) {
       playerRec_.y = 0;
@@ -193,26 +222,54 @@ public:
     }
 
     char buffer[20];
-    snprintf(buffer, sizeof(buffer), "%d x %d", playerScore, enemyScore);
+    snprintf(buffer, sizeof(buffer), "%d x %d", playerScore_, enemyScore_);
     float width = MeasureText(buffer, SCORE_SIZE);
     DrawText(
         buffer, (config_.SCREEN_WIDTH / 2) - (width / 2), 10, SCORE_SIZE, WHITE
     );
 
-    if (state_ == PAUSED || state_ == LOST) {
-      std::string paused = "Paused";
+    if (state_ != RUNNING) {
+      std::string statePhrase = "PAUSED";
+      Color stateColor = YELLOW;
 
       if (state_ == LOST) {
-        paused = "Lost";
+        statePhrase = "YOU LOSE!";
+        stateColor = RED;
+      } else if (state_ == WON) {
+        statePhrase = "YOU WON!";
+        stateColor = BLUE;
       }
 
-      width = MeasureText(paused.c_str(), STATE_SIZE);
+      width = MeasureText(statePhrase.c_str(), STATE_SIZE);
       DrawText(
-          paused.c_str(),
+          statePhrase.c_str(),
           (config_.SCREEN_WIDTH / 2) - (width / 2),
           40,
           STATE_SIZE,
-          YELLOW
+          stateColor
+      );
+    }
+
+    renderHelperText();
+  }
+
+  void renderHelperText() {
+    std::string mode = difficulty_ == EASY ? "EASY" : "HARD";
+    DrawText(mode.c_str(), 26, 10, 14, difficulty_ == EASY ? GRAY : RED);
+
+    static const int textSize = 10;
+
+    if (showHelp_) {
+      std::string helperText = "Press \nD: Debug | Space: Pause | . (dot): "
+                               "Hard Mode | ?: Help ";
+
+      float width = MeasureText(helperText.c_str(), textSize);
+      DrawText(
+          helperText.c_str(),
+          (config_.SCREEN_WIDTH / 2) - (width / 2),
+          config_.SCREEN_HEIGHT - 60,
+          textSize,
+          GRAY
       );
     }
   }

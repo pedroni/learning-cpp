@@ -1,6 +1,5 @@
 #include "src/config.h"
 #include "src/menu.h"
-#include <cstdio>
 #include <raylib.h>
 
 int main() {
