@@ -1,0 +1,6 @@
+---
+Language: Cpp
+BasedOnStyle: LLVM
+BinPackArguments: false
+AlignAfterOpenBracket: BlockIndent
+---

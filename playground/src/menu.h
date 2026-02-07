@@ -24,11 +24,10 @@ class Menu {
 
 public:
   Menu() : config_(Config::instance()) {
-    MenuOption dvd;
-    dvd.name = "DVD Screensaver";
-    dvd.app = new DvdScreensaver();
+    options_.push_back({"DVD Screensaver", new DvdScreensaver});
+    options_.push_back({"Pong", new Pong()});
 
-    options_.push_back(dvd);
+    activeApp_ = options_.at(1).app;
   }
 
   void update() {
@@ -68,17 +67,25 @@ public:
     }
 
     int menuWidth = MeasureText("Menu", FONT_SIZE);
-    DrawText("Menu", (config_.SCREEN_WIDTH / 2) - ((float)menuWidth / 2), 40,
-             FONT_SIZE, hoveringAction_ == -1 ? YELLOW : WHITE);
+    DrawText(
+        "Menu",
+        (config_.SCREEN_WIDTH / 2) - ((float)menuWidth / 2),
+        40,
+        FONT_SIZE,
+        hoveringAction_ == -1 ? YELLOW : WHITE
+    );
 
     for (size_t i = 0; i < options_.size(); i++) {
       MenuOption option = options_[i];
 
       int nameWidth = MeasureText(option.name.c_str(), FONT_SIZE);
-      DrawText(option.name.c_str(),
-               (config_.SCREEN_WIDTH / 2) - ((float)nameWidth / 2),
-               (FONT_SIZE + 10) * (i + 1) + 80, FONT_SIZE,
-               hoveringAction_ == i ? YELLOW : WHITE);
+      DrawText(
+          option.name.c_str(),
+          (config_.SCREEN_WIDTH / 2) - ((float)nameWidth / 2),
+          (FONT_SIZE + 10) * (i + 1) + 80,
+          FONT_SIZE,
+          hoveringAction_ == i ? YELLOW : WHITE
+      );
     }
 
     return;

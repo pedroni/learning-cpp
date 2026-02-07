@@ -92,16 +92,29 @@ public:
   }
 
   void render() {
-    DrawRectangle(leftBorderRec_.x, leftBorderRec_.y, leftBorderRec_.width,
-                  leftBorderRec_.height, GRAY);
-    DrawRectangle(rightBorderRec_.x, rightBorderRec_.y, rightBorderRec_.width,
-                  rightBorderRec_.height, GRAY);
+    DrawRectangle(
+        leftBorderRec_.x,
+        leftBorderRec_.y,
+        leftBorderRec_.width,
+        leftBorderRec_.height,
+        GRAY
+    );
 
-    DrawRectangle(playerRec_.x, playerRec_.y, playerRec_.width,
-                  playerRec_.height, BLUE);
+    DrawRectangle(
+        rightBorderRec_.x,
+        rightBorderRec_.y,
+        rightBorderRec_.width,
+        rightBorderRec_.height,
+        GRAY
+    );
+
+    DrawRectangle(
+        playerRec_.x, playerRec_.y, playerRec_.width, playerRec_.height, BLUE
+    );
     DrawRectangle(aiRec_.x, aiRec_.y, aiRec_.width, aiRec_.height, RED);
 
-    DrawRectangle(ballRec_.x, ballRec_.y, ballRec_.width, ballRec_.height,
-                  WHITE);
+    DrawRectangle(
+        ballRec_.x, ballRec_.y, ballRec_.width, ballRec_.height, WHITE
+    );
   }
 };
