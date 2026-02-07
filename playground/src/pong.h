@@ -8,7 +8,6 @@
 #include "config.h"
 #include "entity.h"
 #include "raylib.h"
-#include "raymath.h"
 
 enum PongDifficulty { EASY, HARD };
 enum PongState { RUNNING, PAUSED, LOST, WON };
@@ -19,6 +18,11 @@ class Pong : public Entity {
   const float PLAYER_WIDTH = 10;
   const float PLAYER_HEIGHT = 60;
   const float PLAYER_SPEED = 8;
+
+  const float ENEMY_SPEED = PLAYER_SPEED * 1.2;
+
+  // 500ms
+  const float ENEMY_DELAY = 0.2f;
 
   const float BALL_SIZE = 10;
   const float BALL_SPEED = 4;
@@ -42,6 +46,7 @@ class Pong : public Entity {
 
   RecEntity enemyRec_;
   float enemySpeed_;
+  float timeSinceLastMovementEnemy_ = 0;
 
   RecEntity ballRec_;
   float ballSpeedX_;
@@ -82,7 +87,7 @@ class Pong : public Entity {
     playerRec_.color = BLUE;
 
     enemyRec_.x = config_.SCREEN_WIDTH - BORDER_SIZE * 2 - PLAYER_WIDTH;
-    enemyRec_.y = 0;
+    enemyRec_.y = BORDER_SIZE * 2;
     enemyRec_.width = PLAYER_WIDTH;
     enemyRec_.height = PLAYER_HEIGHT;
     enemyRec_.color = RED;
@@ -92,7 +97,7 @@ class Pong : public Entity {
   }
 
   void resetSpeeds_() {
-    enemySpeed_ = PLAYER_SPEED * 1.2;
+    enemySpeed_ = ENEMY_SPEED;
 
     ballSpeedX_ = BALL_SPEED;
     ballSpeedY_ = BALL_SPEED;
@@ -191,20 +196,35 @@ public:
       reset_();
     }
 
-    // basic ai just goes back and forth
-    if (enemyRec_.y < 0 ||
-        enemyRec_.y > config_.SCREEN_HEIGHT - enemyRec_.height) {
-      enemySpeed_ *= -1;
+    if (GetTime() - timeSinceLastMovementEnemy_ >= ENEMY_DELAY) {
+      // basic ai just goes back and forth
+      if (enemyRec_.y <= ballRec_.y) {
+        timeSinceLastMovementEnemy_ = GetTime();
+        enemySpeed_ = ENEMY_SPEED;
+      } else {
+        timeSinceLastMovementEnemy_ = GetTime();
+        enemySpeed_ = -1 * ENEMY_SPEED;
+      }
     }
 
     enemyRec_.y += enemySpeed_;
 
+    // prevent player from going out of obunds
     if (playerRec_.y < 0) {
       playerRec_.y = 0;
     }
 
     if (playerRec_.y > config_.SCREEN_HEIGHT - playerRec_.height) {
       playerRec_.y = config_.SCREEN_HEIGHT - playerRec_.height;
+    }
+
+    // prevent enemy from going out of bounds
+    if (enemyRec_.y < 0) {
+      enemyRec_.y = 0;
+    }
+
+    if (enemyRec_.y > config_.SCREEN_HEIGHT - enemyRec_.height) {
+      enemyRec_.y = config_.SCREEN_HEIGHT - enemyRec_.height;
     }
 
     // ball handling
