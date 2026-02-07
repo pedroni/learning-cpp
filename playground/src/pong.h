@@ -5,6 +5,8 @@
 #include "entity.h"
 #include "raylib.h"
 #include "raymath.h"
+#include <cstdio>
+#include <sstream>
 #include <vector>
 
 class Pong : public Entity {
@@ -16,6 +18,9 @@ class Pong : public Entity {
 
   const float BALL_SIZE = 10;
   const float BALL_SPEED = 8;
+
+  const float SCORE_SIZE = 20;
+  const float STATE_SIZE = 40;
 
   Config &config_;
 
@@ -59,18 +64,14 @@ class Pong : public Entity {
     rightBorderRec_.width = BORDER_SIZE;
     rightBorderRec_.height = config_.SCREEN_HEIGHT;
 
-    ballRec_.x = (config_.SCREEN_WIDTH / 2) - (BALL_SIZE / 2);
-    ballRec_.y = (config_.SCREEN_HEIGHT / 2) - (BALL_SIZE / 2);
-    ballRec_.width = BALL_SIZE;
-    ballRec_.height = BALL_SIZE;
-    ballRec_.color = WHITE;
+    resetBall_();
 
     playerRec_.x = BORDER_SIZE * 2;
     playerRec_.y = 0;
     playerRec_.width = PLAYER_WIDTH;
     playerRec_.height = PLAYER_HEIGHT;
+    playerRec_.color = BLUE;
 
-    enemyRec_.color = BLUE;
     enemyRec_.x = config_.SCREEN_WIDTH - BORDER_SIZE * 2 - PLAYER_WIDTH;
     enemyRec_.y = 0;
     enemyRec_.width = PLAYER_WIDTH;
@@ -78,7 +79,17 @@ class Pong : public Entity {
     enemyRec_.color = RED;
   }
 
+  void resetBall_() {
+    ballRec_.x = (config_.SCREEN_WIDTH / 2) - (BALL_SIZE / 2);
+    ballRec_.y = (config_.SCREEN_HEIGHT / 2) - (BALL_SIZE / 2);
+    ballRec_.width = BALL_SIZE;
+    ballRec_.height = BALL_SIZE;
+    ballRec_.color = WHITE;
+  }
+
 public:
+  bool paused = false;
+
   Pong() : config_(Config::instance()) {
     initializeRecs_();
 
@@ -91,16 +102,45 @@ public:
     entities_.push_back(&enemyRec_);
   }
 
-  void update() {
-    // TODO:: make ai, ball and player be an entity
-
-    // basic ai just goes back and forth
-    if (enemyRec_.y < 0 ||
-        enemyRec_.y > config_.SCREEN_HEIGHT - enemyRec_.height) {
-      enemySpeed *= -1;
+  void checkCollisions() {
+    // bounce the ball off left and right on X axis always, however
+    if (CheckCollisionRecs(ballRec_.getRec(), playerRec_.getRec())) {
+      ballSpeedX *= -1;
     }
 
-    enemyRec_.y += enemySpeed;
+    if (CheckCollisionRecs(ballRec_.getRec(), enemyRec_.getRec())) {
+      ballSpeedX *= -1;
+    }
+
+    if (CheckCollisionRecs(ballRec_.getRec(), topBorderRec_.getRec()) ||
+        CheckCollisionRecs(ballRec_.getRec(), bottomBorderRec_.getRec())) {
+      // bounce of top and bottom
+      ballSpeedY *= -1;
+    }
+
+    if (CheckCollisionRecs(ballRec_.getRec(), rightBorderRec_.getRec())) {
+      resetBall_();
+      paused = true;
+      playerScore++;
+    }
+
+    if (CheckCollisionRecs(ballRec_.getRec(), leftBorderRec_.getRec())) {
+      resetBall_();
+      paused = true;
+      enemyScore++;
+    }
+  }
+
+  void update() {
+    if (IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_SPACE)) {
+      paused = !paused;
+    }
+
+    if (paused) {
+      return;
+    }
+
+    checkCollisions();
 
     // player handling
     if (IsKeyDown(KEY_DOWN)) {
@@ -114,6 +154,14 @@ public:
       initializeRecs_();
     }
 
+    // basic ai just goes back and forth
+    if (enemyRec_.y < 0 ||
+        enemyRec_.y > config_.SCREEN_HEIGHT - enemyRec_.height) {
+      enemySpeed *= -1;
+    }
+
+    enemyRec_.y += enemySpeed;
+
     if (playerRec_.y < 0) {
       playerRec_.y = 0;
     }
@@ -125,15 +173,6 @@ public:
     // ball handling
     ballRec_.x += ballSpeedX;
     ballRec_.y += ballSpeedY;
-
-    // bounce the ball off left and right on X axis always, however
-    if (CheckCollisionRecs(ballRec_.getRec(), playerRec_.getRec())) {
-      ballSpeedX *= -1;
-    }
-
-    if (CheckCollisionRecs(ballRec_.getRec(), enemyRec_.getRec())) {
-      ballSpeedX *= -1;
-    }
   }
 
   void render() {
@@ -143,6 +182,25 @@ public:
     // for (auto &entity : entities_) {
     for (Entity *&entity : entities_) {
       entity->render();
+    }
+
+    char buffer[20];
+    snprintf(buffer, sizeof(buffer), "%d x %d", playerScore, enemyScore);
+    float width = MeasureText(buffer, SCORE_SIZE);
+    DrawText(
+        buffer, (config_.SCREEN_WIDTH / 2) - (width / 2), 10, SCORE_SIZE, WHITE
+    );
+
+    if (paused) {
+      char paused[20] = "Paused";
+      width = MeasureText(paused, STATE_SIZE);
+      DrawText(
+          paused,
+          (config_.SCREEN_WIDTH / 2) - (width / 2),
+          40,
+          STATE_SIZE,
+          YELLOW
+      );
     }
   }
 };

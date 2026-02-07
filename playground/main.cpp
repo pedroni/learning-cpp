@@ -1,5 +1,6 @@
 #include "src/config.h"
 #include "src/menu.h"
+#include <cstdio>
 #include <raylib.h>
 
 int main() {
@@ -8,7 +9,7 @@ int main() {
   // using the existing reference
   Config &config = Config::instance();
 
-  InitWindow(config.SCREEN_WIDTH, config.SCREEN_HEIGHT, "DVD Screensaver");
+  InitWindow(config.SCREEN_WIDTH, config.SCREEN_HEIGHT, "Personal Playground");
 
   SetTargetFPS(60);
 
@@ -31,6 +32,7 @@ int main() {
 
     menu.render();
 
+    // printf("%f\n", GetFrameTime());
     EndDrawing();
   }
 

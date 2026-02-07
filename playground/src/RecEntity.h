@@ -9,7 +9,7 @@ public:
   float y;
   float width;
   float height;
-  Color color = GRAY;
+  Color color = BLACK;
 
   RecEntity() {}
   RecEntity(float x, float y, float width, float height, Color color)
@@ -19,5 +19,9 @@ public:
   Rectangle getRec() { return Rectangle{x, y, width, height}; }
 
   void update() override {};
-  void render() override { DrawRectangle(x, y, width, height, color); }
+  void render() override {
+    DrawRectangle(x, y, width, height, color);
+    DrawRectangleLines(x, y, width, height, color);
+    DrawRectangleLines(int posX, int posY, int width, int height, Color color)
+  }
 };
