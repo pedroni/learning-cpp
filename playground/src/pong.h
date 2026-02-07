@@ -1,12 +1,14 @@
 #pragma once
 
+#include "RecEntity.h"
 #include "config.h"
 #include "entity.h"
 #include "raylib.h"
 #include "raymath.h"
+#include <vector>
 
 class Pong : public Entity {
-  const float BORDER_WIDTH = 5;
+  const float BORDER_SIZE = 5;
 
   const float PLAYER_WIDTH = 10;
   const float PLAYER_HEIGHT = 60;
@@ -18,63 +20,98 @@ class Pong : public Entity {
   Config &config_;
 
   // used to identify when the ball hits each side
-  Rectangle leftBorderRec_;
-  Rectangle rightBorderRec_;
+  RecEntity topBorderRec_;
+  RecEntity bottomBorderRec_;
+  RecEntity leftBorderRec_;
+  RecEntity rightBorderRec_;
 
-  Rectangle playerRec_;
+  RecEntity playerRec_;
   float playerSpeed = 0;
 
-  Rectangle aiRec_;
-  float aiSpeed = PLAYER_SPEED * 1.2;
+  RecEntity enemyRec_;
+  float enemySpeed = PLAYER_SPEED * 1.2;
 
-  Rectangle ballRec_;
-  float ballSpeed = BALL_SPEED;
+  RecEntity ballRec_;
+  float ballSpeedX = BALL_SPEED;
+  float ballSpeedY = BALL_SPEED;
 
-public:
-  Pong() : config_(Config::instance()) {
+  // vector cannot construct Entity therefore we need a pointer of Entity
+  std::vector<Entity *> entities_;
+
+  int playerScore = 0;
+  int enemyScore = 0;
+
+  void initializeRecs_() {
+    topBorderRec_.width = config_.SCREEN_WIDTH;
+    topBorderRec_.height = BORDER_SIZE;
+
+    bottomBorderRec_.y = config_.SCREEN_HEIGHT - BORDER_SIZE;
+    bottomBorderRec_.width = config_.SCREEN_WIDTH;
+    bottomBorderRec_.height = BORDER_SIZE;
+
     leftBorderRec_.x = 0;
     leftBorderRec_.y = 0;
-    leftBorderRec_.width = BORDER_WIDTH;
+    leftBorderRec_.width = BORDER_SIZE;
     leftBorderRec_.height = config_.SCREEN_HEIGHT;
 
-    rightBorderRec_.x = config_.SCREEN_WIDTH - BORDER_WIDTH;
+    rightBorderRec_.x = config_.SCREEN_WIDTH - BORDER_SIZE;
     rightBorderRec_.y = 0;
-    rightBorderRec_.width = BORDER_WIDTH;
+    rightBorderRec_.width = BORDER_SIZE;
     rightBorderRec_.height = config_.SCREEN_HEIGHT;
 
     ballRec_.x = (config_.SCREEN_WIDTH / 2) - (BALL_SIZE / 2);
     ballRec_.y = (config_.SCREEN_HEIGHT / 2) - (BALL_SIZE / 2);
-
     ballRec_.width = BALL_SIZE;
     ballRec_.height = BALL_SIZE;
+    ballRec_.color = WHITE;
 
-    playerRec_.x = BORDER_WIDTH * 2;
+    playerRec_.x = BORDER_SIZE * 2;
     playerRec_.y = 0;
     playerRec_.width = PLAYER_WIDTH;
     playerRec_.height = PLAYER_HEIGHT;
 
-    aiRec_.x = config_.SCREEN_WIDTH - BORDER_WIDTH * 2 - PLAYER_WIDTH;
-    aiRec_.y = 0;
-    aiRec_.width = PLAYER_WIDTH;
-    aiRec_.height = PLAYER_HEIGHT;
+    enemyRec_.color = BLUE;
+    enemyRec_.x = config_.SCREEN_WIDTH - BORDER_SIZE * 2 - PLAYER_WIDTH;
+    enemyRec_.y = 0;
+    enemyRec_.width = PLAYER_WIDTH;
+    enemyRec_.height = PLAYER_HEIGHT;
+    enemyRec_.color = RED;
+  }
+
+public:
+  Pong() : config_(Config::instance()) {
+    initializeRecs_();
+
+    entities_.push_back(&topBorderRec_);
+    entities_.push_back(&bottomBorderRec_);
+    entities_.push_back(&leftBorderRec_);
+    entities_.push_back(&rightBorderRec_);
+    entities_.push_back(&ballRec_);
+    entities_.push_back(&playerRec_);
+    entities_.push_back(&enemyRec_);
   }
 
   void update() {
-
     // TODO:: make ai, ball and player be an entity
 
     // basic ai just goes back and forth
-    if (aiRec_.y < 0 || aiRec_.y > config_.SCREEN_HEIGHT - aiRec_.height) {
-      aiSpeed *= -1;
+    if (enemyRec_.y < 0 ||
+        enemyRec_.y > config_.SCREEN_HEIGHT - enemyRec_.height) {
+      enemySpeed *= -1;
     }
 
-    aiRec_.y += aiSpeed;
+    enemyRec_.y += enemySpeed;
 
     // player handling
     if (IsKeyDown(KEY_DOWN)) {
       playerRec_.y += PLAYER_SPEED;
     } else if (IsKeyDown(KEY_UP)) {
       playerRec_.y -= PLAYER_SPEED;
+    }
+
+    if (IsKeyDown(KEY_R)) {
+      // restart the game;
+      initializeRecs_();
     }
 
     if (playerRec_.y < 0) {
@@ -86,35 +123,26 @@ public:
     }
 
     // ball handling
-    ballRec_.x += ballSpeed;
-    // to make it simple im boucing off the walls first
-    // if (GetCollisionRec(ballRec_, rightBorderRec_))
+    ballRec_.x += ballSpeedX;
+    ballRec_.y += ballSpeedY;
+
+    // bounce the ball off left and right on X axis always, however
+    if (CheckCollisionRecs(ballRec_.getRec(), playerRec_.getRec())) {
+      ballSpeedX *= -1;
+    }
+
+    if (CheckCollisionRecs(ballRec_.getRec(), enemyRec_.getRec())) {
+      ballSpeedX *= -1;
+    }
   }
 
   void render() {
-    DrawRectangle(
-        leftBorderRec_.x,
-        leftBorderRec_.y,
-        leftBorderRec_.width,
-        leftBorderRec_.height,
-        GRAY
-    );
+    // auto & to avoid copying the pointers, small optimaztion, this is a
+    // reference to a pointer
 
-    DrawRectangle(
-        rightBorderRec_.x,
-        rightBorderRec_.y,
-        rightBorderRec_.width,
-        rightBorderRec_.height,
-        GRAY
-    );
-
-    DrawRectangle(
-        playerRec_.x, playerRec_.y, playerRec_.width, playerRec_.height, BLUE
-    );
-    DrawRectangle(aiRec_.x, aiRec_.y, aiRec_.width, aiRec_.height, RED);
-
-    DrawRectangle(
-        ballRec_.x, ballRec_.y, ballRec_.width, ballRec_.height, WHITE
-    );
+    // for (auto &entity : entities_) {
+    for (Entity *&entity : entities_) {
+      entity->render();
+    }
   }
 };
