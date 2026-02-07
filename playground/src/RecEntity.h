@@ -1,6 +1,8 @@
 #pragma once
 
+#include "config.h"
 #include "entity.h"
+#include "helpers.h"
 #include "raylib.h"
 
 class RecEntity : public Entity {
@@ -21,7 +23,9 @@ public:
   void update() override {};
   void render() override {
     DrawRectangle(x, y, width, height, color);
-    DrawRectangleLines(x, y, width, height, color);
-    DrawRectangleLines(int posX, int posY, int width, int height, Color color)
+
+    if (GetConfig().isDebugging()) {
+      DrawRectangleLines(x, y, width, height, PURPLE);
+    }
   }
 };

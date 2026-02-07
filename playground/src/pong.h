@@ -6,7 +6,6 @@
 #include "raylib.h"
 #include "raymath.h"
 #include <cstdio>
-#include <sstream>
 #include <vector>
 
 class Pong : public Entity {
@@ -17,7 +16,7 @@ class Pong : public Entity {
   const float PLAYER_SPEED = 8;
 
   const float BALL_SIZE = 10;
-  const float BALL_SPEED = 8;
+  const float BALL_SPEED = 4;
 
   const float SCORE_SIZE = 20;
   const float STATE_SIZE = 40;
