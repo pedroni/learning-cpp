@@ -6,7 +6,11 @@
 #include "raylib.h"
 #include "raymath.h"
 #include <cstdio>
+#include <string>
 #include <vector>
+
+enum PongDifficulty { EASY, HARD };
+enum PongState { RUNNING, PAUSED, LOST };
 
 class Pong : public Entity {
   const float BORDER_SIZE = 5;
@@ -23,6 +27,9 @@ class Pong : public Entity {
 
   Config &config_;
 
+  PongDifficulty difficulty = PongDifficulty::EASY;
+  PongState state_ = PongState::RUNNING;
+
   // used to identify when the ball hits each side
   RecEntity topBorderRec_;
   RecEntity bottomBorderRec_;
@@ -36,8 +43,8 @@ class Pong : public Entity {
   float enemySpeed = PLAYER_SPEED * 1.2;
 
   RecEntity ballRec_;
-  float ballSpeedX = BALL_SPEED;
-  float ballSpeedY = BALL_SPEED;
+  float ballSpeedX_ = BALL_SPEED;
+  float ballSpeedY_ = BALL_SPEED;
 
   // vector cannot construct Entity therefore we need a pointer of Entity
   std::vector<Entity *> entities_;
@@ -87,8 +94,6 @@ class Pong : public Entity {
   }
 
 public:
-  bool paused = false;
-
   Pong() : config_(Config::instance()) {
     initializeRecs_();
 
@@ -104,38 +109,42 @@ public:
   void checkCollisions() {
     // bounce the ball off left and right on X axis always, however
     if (CheckCollisionRecs(ballRec_.getRec(), playerRec_.getRec())) {
-      ballSpeedX *= -1;
+      ballSpeedX_ *= -1;
     }
 
     if (CheckCollisionRecs(ballRec_.getRec(), enemyRec_.getRec())) {
-      ballSpeedX *= -1;
+      ballSpeedX_ *= -1;
     }
 
     if (CheckCollisionRecs(ballRec_.getRec(), topBorderRec_.getRec()) ||
         CheckCollisionRecs(ballRec_.getRec(), bottomBorderRec_.getRec())) {
       // bounce of top and bottom
-      ballSpeedY *= -1;
+      ballSpeedY_ *= -1;
     }
 
     if (CheckCollisionRecs(ballRec_.getRec(), rightBorderRec_.getRec())) {
       resetBall_();
-      paused = true;
+      state_ = PAUSED;
       playerScore++;
     }
 
     if (CheckCollisionRecs(ballRec_.getRec(), leftBorderRec_.getRec())) {
       resetBall_();
-      paused = true;
+      state_ = PAUSED;
       enemyScore++;
     }
   }
 
   void update() {
-    if (IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_SPACE)) {
-      paused = !paused;
+    if ((IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_SPACE))) {
+      if (state_ == RUNNING) {
+        state_ = PAUSED;
+      } else if (state_ == PAUSED) {
+        state_ = RUNNING;
+      }
     }
 
-    if (paused) {
+    if (state_ != RUNNING) {
       return;
     }
 
@@ -170,8 +179,8 @@ public:
     }
 
     // ball handling
-    ballRec_.x += ballSpeedX;
-    ballRec_.y += ballSpeedY;
+    ballRec_.x += ballSpeedX_;
+    ballRec_.y += ballSpeedY_;
   }
 
   void render() {
@@ -190,11 +199,16 @@ public:
         buffer, (config_.SCREEN_WIDTH / 2) - (width / 2), 10, SCORE_SIZE, WHITE
     );
 
-    if (paused) {
-      char paused[20] = "Paused";
-      width = MeasureText(paused, STATE_SIZE);
+    if (state_ == PAUSED || state_ == LOST) {
+      std::string paused = "Paused";
+
+      if (state_ == LOST) {
+        paused = "Lost";
+      }
+
+      width = MeasureText(paused.c_str(), STATE_SIZE);
       DrawText(
-          paused,
+          paused.c_str(),
           (config_.SCREEN_WIDTH / 2) - (width / 2),
           40,
           STATE_SIZE,
